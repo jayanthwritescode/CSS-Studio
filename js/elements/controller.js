@@ -28,6 +28,7 @@ export function mountElements(store, notify) {
     const element = selectedElement(store.getState());
     if (!element) return;
     if (action === 'rename') {
+      document.dispatchEvent(new Event('motionlab:properties'));
       const field = document.querySelector('#element-name');
       field.focus();
       field.select();

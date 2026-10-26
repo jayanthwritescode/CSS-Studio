@@ -1,3 +1,4 @@
+import { mountWorkspace } from './panels/workspace.js';
 import { mountProjectManager } from './storage/project-manager.js';
 import { mountExport } from './export/panel.js';
 import { mountHistory } from './state/history-controls.js';
@@ -31,6 +32,7 @@ workspace.inert = toolbar.inert = true;
 await mountProjectManager(store, playback, notify);
 workspace.inert = toolbar.inert = false;
 const canvas = mountCanvas(store);
+mountWorkspace();
 mountProperties(store);
 mountElementProperties(store, playback);
 mountKeyframeProperties(store, playback, notify);

@@ -32,7 +32,7 @@ test('invalid canvas input cannot corrupt project state', () => {
 test('zoom is bounded and manual zoom leaves fit mode', () => {
   const store = createStore();
   store.dispatch({ type: 'view/zoom', zoom: 100 });
-  assert.deepEqual(store.getState().view, { zoom: 2, fit: false, grid: true, panX: 0, panY: 0 });
+  assert.deepEqual(store.getState().view, { zoom: 2, fit: false, grid: true, snap: false, panX: 0, panY: 0 });
   store.dispatch({ type: 'view/zoom', zoom: 0 });
   assert.equal(store.getState().view.zoom, 0.05);
   const previous = store.getState();

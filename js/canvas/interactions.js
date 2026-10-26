@@ -58,6 +58,7 @@ export function mountInteractions(store, playback) {
     const dx = current.x - gesture.start.x, dy = current.y - gesture.start.y;
     let styles;
     if (gesture.type === 'move') styles = { x: gesture.styles.x + dx, y: gesture.styles.y + dy };
+    if (gesture.type === 'move' && store.getState().view.snap && !event.altKey) styles = { x: Math.round(styles.x / 16) * 16, y: Math.round(styles.y / 16) * 16 };
     if (gesture.type === 'resize') styles = resizeFromDelta(gesture.styles, gesture.handle, dx, dy);
     if (gesture.type === 'rotate') {
       gesture.rotation = rotationFromPointer({ ...gesture.styles, rotation: gesture.rotation ?? gesture.styles.rotation }, gesture.previous ?? gesture.start, current);

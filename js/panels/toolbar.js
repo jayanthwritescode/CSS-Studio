@@ -47,7 +47,7 @@ export function mountToolbar(store, canvas) {
     if (event.defaultPrevented || document.querySelector('dialog[open]') || event.ctrlKey || event.metaKey || event.altKey || event.target.closest('input, select, textarea, [contenteditable="true"]')) return;
     const key = event.key.toLowerCase();
     if (key === 'f') { event.preventDefault(); canvas.fit(); }
-    if (key === 'g') { event.preventDefault(); toggleGrid(); }
+    if (key === 'g' && !event.repeat) { event.preventDefault(); if (event.shiftKey) store.dispatch({ type: 'view/snap', enabled: !store.getState().view.snap }); else toggleGrid(); }
     if (key === '+' || key === '=') { event.preventDefault(); changeZoom(1.25); }
     if (key === '-') { event.preventDefault(); changeZoom(0.8); }
     if (key === '?') { event.preventDefault(); guide.showModal(); }

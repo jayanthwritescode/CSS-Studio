@@ -1,3 +1,4 @@
+import { SAMPLES, createSample } from '../samples/projects.js';
 import { openProjectRepository } from './projects.js';
 import { parseProject, normalizeProject, serializeProject, validateImageAssets, MAX_PROJECT_BYTES } from './serialization.js';
 import { createInitialState } from '../state/store.js';
@@ -62,7 +63,7 @@ export async function mountProjectManager(store, playback, notify) {
           await render();
         });
       });
-      const meta = document.createElement('p'); meta.textContent = `${row.elementCount} elements · ${new Date(row.updatedAt).toLocaleString()}${row.id === store.getState().project.id ? ' · Current' : ''}`;
+      const meta = document.createElement('p'); meta.textContent = `${row.elementCount} element${row.elementCount === 1 ? '' : 's'} · ${new Date(row.updatedAt).toLocaleString()}${row.id === store.getState().project.id ? ' · Current' : ''}`;
       const actions = document.createElement('div'); actions.className = 'project-row-actions';
       for (const action of trash.checked ? ['Restore'] : ['Open', 'Duplicate', 'Trash']) {
         const button = document.createElement('button'); button.type = 'button'; button.textContent = action;
@@ -86,9 +87,23 @@ export async function mountProjectManager(store, playback, notify) {
       card.append(input, meta, actions); list.append(card);
     }
   }
-  document.querySelector('#open-projects').addEventListener('click', () => guard(async () => {
+  const openLibrary = () => guard(async () => {
     playback.pause(); await flush(); trash.checked = false; dialog.showModal(); await render();
-  }));
+  });
+  document.querySelector('#open-projects').addEventListener('click', openLibrary);
+  document.querySelectorAll('[data-open-samples]').forEach(button => button.addEventListener('click', openLibrary));
+  for (const sample of SAMPLES) {
+    const button = document.createElement('button'); button.type = 'button'; button.className = `sample-card sample-${sample.id}`;
+    button.setAttribute('aria-label', `Use ${sample.kind} sample`);
+    const art = document.createElement('span'); art.className = 'sample-art'; art.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < 3; i++) art.append(document.createElement('i'));
+    const name = document.createElement('strong'); name.textContent = sample.name;
+    const kind = document.createElement('span'); kind.className = 'sample-kind'; kind.textContent = sample.kind;
+    const description = document.createElement('span'); description.className = 'sample-description'; description.textContent = sample.description;
+    button.append(art, name, kind, description);
+    button.addEventListener('click', () => guard(async () => { await flush(); await install(createSample(sample.id)); dialog.close(); notify(`${sample.name} is ready. Press Play to explore its editable tracks.`); }));
+    document.querySelector('#sample-list').append(button);
+  }
   document.querySelector('#close-projects').addEventListener('click', () => dialog.close());
   trash.addEventListener('change', () => guard(render));
   document.querySelector('#new-project').addEventListener('click', () => guard(async () => { await flush(); await install(createInitialState().project); dialog.close(); notify('New project created.'); }));

@@ -18,7 +18,7 @@ export function createInitialState() {
       elements: [],
       output: normalizeOutput(),
     },
-    view: { zoom: 0.5, grid: true, fit: true, panX: 0, panY: 0 },
+    view: { zoom: 0.5, grid: true, snap: false, fit: true, panX: 0, panY: 0 },
     selection: null,
     timeline: initialTimeline(),
   };
@@ -69,6 +69,10 @@ export function reduce(state, action) {
       const fit = action.fit === true;
       if (action.x === state.view.panX && action.y === state.view.panY && fit === state.view.fit) return state;
       return { ...state, view: { ...state.view, panX: action.x, panY: action.y, fit } };
+    }
+    case 'view/snap': {
+      const snap = Boolean(action.enabled);
+      return snap === state.view.snap ? state : { ...state, view: { ...state.view, snap } };
     }
     case 'view/grid': {
       const grid = Boolean(action.visible);

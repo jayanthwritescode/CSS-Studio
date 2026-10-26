@@ -28,6 +28,7 @@ export function mountLayers(store) {
   });
   list.addEventListener('dblclick', event => {
     if (!event.target.closest('[data-action="select"]')) return;
+    document.dispatchEvent(new Event('motionlab:properties'));
     document.querySelector('#element-name').focus();
     document.querySelector('#element-name').select();
   });
@@ -66,6 +67,7 @@ export function mountLayers(store) {
     });
     document.querySelector('#layer-count').textContent = elements.length;
     document.querySelector('#layer-empty').hidden = elements.length > 0;
+    document.querySelector('#empty-samples').hidden = elements.length > 0;
     document.querySelector('#element-status').textContent = `${elements.length} element${elements.length === 1 ? '' : 's'}`;
     const selected = selectedElement(state);
     const position = elements.findIndex(element => element.id === state.selection);
@@ -82,7 +84,7 @@ export function mountLayers(store) {
     document.querySelector('#selection-title').textContent = selected ? selected.name : 'Your canvas, your composition.';
     document.querySelector('#selection-description').textContent = selected
       ? `${selected.locked ? 'Locked · ' : ''}${selected.visible ? '' : 'Hidden · '}${Math.round(styles.width)} × ${Math.round(styles.height)} px · ${Math.round(styles.rotation)}° rotation`
-      : 'Add an element to start designing.';
+      : state.project.elements.length ? 'Select a layer to edit, or press Play to explore.' : 'Add an element to start designing.';
   }
   store.subscribe((state, action) => {
     if (action.type === 'timeline/tick' || action.type === 'timeline/seek') updateSummary(state);

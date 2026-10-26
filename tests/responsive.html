@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MotionLab responsive review</title>
+<style>body{margin:16px;background:#ddd;font:14px system-ui}label{display:block;margin-bottom:12px}input{width:90px}iframe{display:block;border:0;height:1000px;max-width:100%}</style>
+<label>Preview width <input id="width" type="number" min="320" max="1600" step="1" value="390"> px</label>
+<output id="report" style="display:block;margin-bottom:12px" aria-live="polite"></output>
+<iframe title="MotionLab responsive preview" src="../index.html" width="390"></iframe>
+<script>document.querySelector('input').addEventListener('input',event=>{if(event.target.validity.valid)document.querySelector('iframe').width=event.target.value;});
+const preview=document.querySelector('iframe');
+preview.addEventListener('load',()=>{
+  const doc=preview.contentDocument;
+  function report(){
+    const panel=doc.querySelector('#properties-panel');
+    const toolbar=doc.querySelector('.toolbar');
+    document.querySelector('#report').textContent=JSON.stringify({width:doc.documentElement.clientWidth,scrollWidth:doc.documentElement.scrollWidth,toolbarHeight:Math.round(toolbar.getBoundingClientRect().height),propertiesDisplay:preview.contentWindow.getComputedStyle(panel).display,propertiesTop:Math.round(panel.getBoundingClientRect().top)});
+  }
+  new ResizeObserver(report).observe(doc.documentElement);
+  new MutationObserver(report).observe(doc.querySelector('.workspace'),{attributes:true,attributeFilter:['class']});
+  report();
+});
+</script>
+</html>

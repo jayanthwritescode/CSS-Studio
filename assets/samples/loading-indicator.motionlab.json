@@ -1,0 +1,402 @@
+{
+  "version": 1,
+  "id": "sample-loading-indicator",
+  "name": "Small moments",
+  "canvas": {
+    "width": 960,
+    "height": 600,
+    "background": "#19141f"
+  },
+  "duration": 1800,
+  "elements": [
+    {
+      "id": "loading-indicator-layer-1",
+      "type": "text",
+      "name": "Eyebrow",
+      "visible": true,
+      "locked": false,
+      "content": "01 / SMALL MOMENTS",
+      "styles": {
+        "x": 64,
+        "y": 48,
+        "width": 840,
+        "height": 37.8,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#ad98be",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 14,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    },
+    {
+      "id": "loading-indicator-layer-2",
+      "type": "text",
+      "name": "Headline",
+      "visible": true,
+      "locked": false,
+      "content": "Good things take a moment.",
+      "styles": {
+        "x": 64,
+        "y": 102,
+        "width": 840,
+        "height": 140.4,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#f5edf9",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 52,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    },
+    {
+      "id": "loading-indicator-layer-3",
+      "type": "circle",
+      "name": "Lilac dot",
+      "visible": true,
+      "locked": false,
+      "content": "",
+      "styles": {
+        "x": 416,
+        "y": 300,
+        "width": 32,
+        "height": 32,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#b99ae9",
+        "backgroundTransparent": false,
+        "color": "#302547",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 9999,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 48,
+        "fontWeight": 600,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": [
+        {
+          "id": "loading-indicator-key-3-0",
+          "time": 0,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-3-1",
+          "time": 144,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-3-2",
+          "time": 468,
+          "properties": {
+            "y": 276
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-3-3",
+          "time": 792,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-3-4",
+          "time": 1800,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        }
+      ]
+    },
+    {
+      "id": "loading-indicator-layer-4",
+      "type": "circle",
+      "name": "Peach dot",
+      "visible": true,
+      "locked": false,
+      "content": "",
+      "styles": {
+        "x": 464,
+        "y": 300,
+        "width": 32,
+        "height": 32,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#edb188",
+        "backgroundTransparent": false,
+        "color": "#302547",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 9999,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 48,
+        "fontWeight": 600,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": [
+        {
+          "id": "loading-indicator-key-4-0",
+          "time": 0,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-4-1",
+          "time": 414,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-4-2",
+          "time": 738,
+          "properties": {
+            "y": 276
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-4-3",
+          "time": 1062,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-4-4",
+          "time": 1800,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        }
+      ]
+    },
+    {
+      "id": "loading-indicator-layer-5",
+      "type": "circle",
+      "name": "Ivory dot",
+      "visible": true,
+      "locked": false,
+      "content": "",
+      "styles": {
+        "x": 512,
+        "y": 300,
+        "width": 32,
+        "height": 32,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#f3e9f8",
+        "backgroundTransparent": false,
+        "color": "#302547",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 9999,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 48,
+        "fontWeight": 600,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": [
+        {
+          "id": "loading-indicator-key-5-0",
+          "time": 0,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-5-1",
+          "time": 684,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-5-2",
+          "time": 1008,
+          "properties": {
+            "y": 276
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-5-3",
+          "time": 1332,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "loading-indicator-key-5-4",
+          "time": 1800,
+          "properties": {
+            "y": 300
+          },
+          "easing": "ease-in-out"
+        }
+      ]
+    },
+    {
+      "id": "loading-indicator-layer-6",
+      "type": "text",
+      "name": "Loading caption",
+      "visible": true,
+      "locked": false,
+      "content": "Preparing something good",
+      "styles": {
+        "x": 340,
+        "y": 380,
+        "width": 300,
+        "height": 45.9,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#bbaac7",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 17,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    },
+    {
+      "id": "loading-indicator-layer-7",
+      "type": "text",
+      "name": "Footer",
+      "visible": true,
+      "locked": false,
+      "content": "A LITTLE MOTION. A CLEAR SIGNAL.",
+      "styles": {
+        "x": 64,
+        "y": 518,
+        "width": 840,
+        "height": 32.4,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#907d9f",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 12,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    }
+  ],
+  "output": {
+    "iterations": "infinite",
+    "direction": "normal",
+    "fill": "both",
+    "delay": 0,
+    "speed": 1
+  }
+}

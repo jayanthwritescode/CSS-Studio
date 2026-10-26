@@ -1,0 +1,317 @@
+{
+  "version": 1,
+  "id": "sample-text-entrance",
+  "name": "Make an entrance",
+  "canvas": {
+    "width": 960,
+    "height": 600,
+    "background": "#faf7f2"
+  },
+  "duration": 2600,
+  "elements": [
+    {
+      "id": "text-entrance-layer-1",
+      "type": "text",
+      "name": "Eyebrow",
+      "visible": true,
+      "locked": false,
+      "content": "A STUDY IN ARRIVAL",
+      "styles": {
+        "x": 64,
+        "y": 56,
+        "width": 840,
+        "height": 37.8,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#8b68bc",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 14,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    },
+    {
+      "id": "text-entrance-layer-2",
+      "type": "rectangle",
+      "name": "Accent line",
+      "visible": true,
+      "locked": false,
+      "content": "",
+      "styles": {
+        "x": 64,
+        "y": 186,
+        "width": 58,
+        "height": 6,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#9271ed",
+        "backgroundTransparent": false,
+        "color": "#302547",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 3,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 48,
+        "fontWeight": 600,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": [
+        {
+          "id": "text-entrance-key-2-0",
+          "time": 0,
+          "properties": {
+            "width": 1,
+            "opacity": 0
+          },
+          "easing": "ease-out"
+        },
+        {
+          "id": "text-entrance-key-2-1",
+          "time": 900,
+          "properties": {
+            "width": 58,
+            "opacity": 1
+          },
+          "easing": "ease-out"
+        }
+      ]
+    },
+    {
+      "id": "text-entrance-layer-3",
+      "type": "text",
+      "name": "Headline entrance",
+      "visible": true,
+      "locked": false,
+      "content": "Make an entrance.",
+      "styles": {
+        "x": 64,
+        "y": 220,
+        "width": 840,
+        "height": 194.4,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#302445",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 72,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": [
+        {
+          "id": "text-entrance-key-3-0",
+          "time": 0,
+          "properties": {
+            "y": 270,
+            "opacity": 0
+          },
+          "easing": "cubic-bezier(0.16, 1, 0.3, 1)"
+        },
+        {
+          "id": "text-entrance-key-3-1",
+          "time": 200,
+          "properties": {
+            "y": 270,
+            "opacity": 0
+          },
+          "easing": "cubic-bezier(0.16, 1, 0.3, 1)"
+        },
+        {
+          "id": "text-entrance-key-3-2",
+          "time": 1300,
+          "properties": {
+            "y": 220,
+            "opacity": 1
+          },
+          "easing": "cubic-bezier(0.16, 1, 0.3, 1)"
+        }
+      ]
+    },
+    {
+      "id": "text-entrance-layer-4",
+      "type": "text",
+      "name": "Supporting text",
+      "visible": true,
+      "locked": false,
+      "content": "Give every idea a moment to arrive.",
+      "styles": {
+        "x": 68,
+        "y": 330,
+        "width": 840,
+        "height": 64.8,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#877a91",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 24,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": [
+        {
+          "id": "text-entrance-key-4-0",
+          "time": 0,
+          "properties": {
+            "y": 365,
+            "opacity": 0
+          },
+          "easing": "ease-out"
+        },
+        {
+          "id": "text-entrance-key-4-1",
+          "time": 650,
+          "properties": {
+            "y": 365,
+            "opacity": 0
+          },
+          "easing": "ease-out"
+        },
+        {
+          "id": "text-entrance-key-4-2",
+          "time": 1800,
+          "properties": {
+            "y": 330,
+            "opacity": 1
+          },
+          "easing": "ease-out"
+        }
+      ]
+    },
+    {
+      "id": "text-entrance-layer-5",
+      "type": "circle",
+      "name": "Peach accent",
+      "visible": true,
+      "locked": false,
+      "content": "",
+      "styles": {
+        "x": 800,
+        "y": 72,
+        "width": 84,
+        "height": 84,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 0.65,
+        "backgroundColor": "#f0c4a5",
+        "backgroundTransparent": false,
+        "color": "#302547",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 9999,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 48,
+        "fontWeight": 600,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    },
+    {
+      "id": "text-entrance-layer-6",
+      "type": "text",
+      "name": "Footer",
+      "visible": true,
+      "locked": false,
+      "content": "PAUSE. SEEK. MAKE IT YOURS.",
+      "styles": {
+        "x": 64,
+        "y": 516,
+        "width": 840,
+        "height": 32.4,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#95849f",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 12,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    }
+  ],
+  "output": {
+    "iterations": "infinite",
+    "direction": "normal",
+    "fill": "both",
+    "delay": 0,
+    "speed": 1
+  }
+}

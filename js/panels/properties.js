@@ -17,6 +17,7 @@ export function mountProperties(store) {
     document.querySelector('#color-label').textContent = canvas.background.toUpperCase();
     document.querySelector('#canvas-summary').textContent = `${canvas.width} × ${canvas.height}`;
     grid.checked = view.grid;
+    document.querySelector('#snap-setting').checked = view.snap;
   }
 
   function resize() {
@@ -42,6 +43,7 @@ export function mountProperties(store) {
   });
   background.addEventListener('input', () => store.dispatch({ type: 'canvas/background', color: background.value }));
   grid.addEventListener('change', () => store.dispatch({ type: 'view/grid', visible: grid.checked }));
+  document.querySelector('#snap-setting').addEventListener('change', event => store.dispatch({ type: 'view/snap', enabled: event.target.checked }));
   form.addEventListener('submit', event => event.preventDefault());
   store.subscribe(render);
   render(store.getState());

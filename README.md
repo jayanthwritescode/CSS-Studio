@@ -2,7 +2,7 @@
 
 A browser-based visual CSS animation studio built with HTML, CSS, and vanilla JavaScript ES modules. No build step, frontend framework, or production dependencies.
 
-The canvas editor, keyframe engine, interactive timeline, 24 animation presets, and graphical easing editor are implemented. Local project management, autosave, undo/redo, and native CSS/HTML/JSON export are also implemented. The final internal batch covers samples, polish, and broader validation. The product interface contains only working tools and product guidance; build checkpoints live in [PHASES.md](PHASES.md).
+The canvas editor, keyframe engine, interactive timeline, 24 animation presets, and graphical easing editor are implemented. Local project management, autosave, undo/redo, and native CSS/HTML/JSON export are also implemented. Three editable sample projects, responsive properties drawers, panel resizing, and optional position snapping are included.
 
 ## Run locally
 
@@ -26,11 +26,23 @@ Open http://127.0.0.1:8000. Use HTTP instead of opening `index.html` through `fi
 - Rename, duplicate, hide, lock, delete, and reorder layers. Layers list front to back; project elements are stored back to front.
 - Locked layers remain selectable and renameable, but their appearance, transforms, order, content, and deletion are protected. Duplicate creates an unlocked copy. Hidden elements remain available through Layers.
 - Choose canvas dimensions, presets, and background color. Zoom from 5% to 200%, pan, fit, and toggle the workspace grid.
-- At narrow widths, the Layers button opens the project panel and Properties moves below the canvas.
+- At narrow widths, Layers and Properties buttons open their respective drawers. Desktop panel dividers support dragging, arrow keys (Shift for larger steps), Home/End, and double-click to reset.
 
 Image import supports PNG, JPEG, WebP, and GIF files up to 5 MB and 40 megapixels. Files are decoded before adding; invalid files produce a notification. Image data lives in the project model as a data URL with no remote asset dependency.
 
 **Projects autosave in IndexedDB in this browser.** The header reports saving, saved, or failed status. The empty-canvas artwork is editor guidance, not a project element.
+
+## Editable samples
+
+Open **Projects** and choose a sample. Each use saves a fresh copy after saving your current work. Press Play or seek the timeline to explore; every layer and keyframe remains editable.
+
+- **Small moments** — three staggered loading dots.
+- **Make an entrance** — delayed headline, supporting text, and accent entrances.
+- **Find your rhythm** — coordinated position, rotation, scale, and opacity.
+
+Portable JSON files live in `assets/samples/` and can also be imported. Regenerate them with `node tests/build-samples.mjs` after changing their source in `js/samples/projects.js`.
+
+Enable **Snap position (16 px)** in Canvas settings or press Shift+G. Drag positions snap in canvas coordinates; hold Alt to bypass. Numeric edits, nudges, rotation, and resizing retain their own precision controls.
 
 ## Animate a composition
 
@@ -192,9 +204,9 @@ The app has no Node runtime dependency. With Node.js 22.7+, run the optional dev
 node --test tests/*.test.mjs
 ```
 
-59 tests cover serialization/import validation, grouped undo/redo, canceled gestures, document switching, export structure and escaping, output settings, all preset exports, and all 24 preset generators, delayed starts, multi-element presets, stepped text reveals, effect CSS, compatibility/lock constraints, easing graph coordinates, and sparse property interpolation, endpoints, missing/duplicate timestamps, color transitions, custom easing, single-scheduler pause/resume, reverse/loop/stop/restart, auto-key isolation, frame operations, duration rescaling/collisions, animated duplication, gesture rollback, and state validation, immutable updates, project serialization, zoom/pan bounds, element creation, lock protection, duplication/deletion, layer order, plain-text content, style injection rejection, rotated resizing across all handles and origins, size clamping, rotation snapping, and transformed bounds.
+63 tests cover sample portability and independent copies, view-only snapping, serialization/import validation, grouped undo/redo, canceled gestures, document switching, export structure and escaping, output settings, all preset exports, and all 24 preset generators, delayed starts, multi-element presets, stepped text reveals, effect CSS, compatibility/lock constraints, easing graph coordinates, and sparse property interpolation, endpoints, missing/duplicate timestamps, color transitions, custom easing, single-scheduler pause/resume, reverse/loop/stop/restart, auto-key isolation, frame operations, duration rescaling/collisions, animated duplication, gesture rollback, and state validation, immutable updates, project serialization, zoom/pan bounds, element creation, lock protection, duplication/deletion, layer order, plain-text content, style injection rejection, rotated resizing across all handles and origins, size clamping, rotation snapping, and transformed bounds.
 
-Browser checks verify IndexedDB save/reopen/autosave, embedded image persistence, valid/corrupt JSON import, project duplicate/Trash/Restore, grouped property/drag undo and keyboard redo, export copy/settings/JSON download, native CSS midpoint parity, preset search/application/timing, visual easing inputs and dragging, real 3D/shimmer/glow effects, text-sized typewriter reveals, and exact midpoint animation values, easing effects, independent element tracks, duration rescaling, keyframe-time editing, invalid easing feedback, marker and playhead dragging, keyframe deletion, playback/reverse/speed/stop, timeline zoom, and actual element creation, dragging/resizing/rotation at non-100% zoom, text editing, image import, appearance controls, transformed alignment, layer visibility/locking/renaming/reordering, duplication/deletion, pan/fit, and keyboard shortcuts. Full Chromium compatibility and cross-feature validation remain on the internal roadmap.
+Browser checks verify IndexedDB save/reopen/autosave, embedded image persistence, valid/corrupt JSON import, project duplicate/Trash/Restore, grouped property/drag undo and keyboard redo, export copy/settings/JSON download, native CSS midpoint parity, preset search/application/timing, visual easing inputs and dragging, real 3D/shimmer/glow effects, text-sized typewriter reveals, and exact midpoint animation values, easing effects, independent element tracks, duration rescaling, keyframe-time editing, invalid easing feedback, marker and playhead dragging, keyframe deletion, playback/reverse/speed/stop, timeline zoom, and actual element creation, dragging/resizing/rotation at non-100% zoom, text editing, image import, appearance controls, transformed alignment, layer visibility/locking/renaming/reordering, duplication/deletion, pan/fit, and keyboard shortcuts. Final responsive/sample/snap checks also pass in the in-app browser. Independent Chromium validation remains unverified because native Chrome access was not approved.
 
 For a reproducible native-export check containing every preset plus sparse independent property tracks:
 
@@ -205,4 +217,5 @@ python3 -m http.server 8001 --bind 127.0.0.1 --directory /tmp/motionlab-export-c
 
 Open http://127.0.0.1:8001 and compare computed properties against `expected.json`. The fixture pauses native CSS at 1500 ms; its script only scales layout.
 
-See the [original project brief](docs/PROJECT-BRIEF.md) for full intended functionality and [batch checkpoints](PHASES.md) for development progress.
+
+Final review details and remaining browser coverage are recorded in [VALIDATION.md](VALIDATION.md).

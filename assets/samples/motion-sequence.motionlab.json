@@ -1,0 +1,423 @@
+{
+  "version": 1,
+  "id": "sample-motion-sequence",
+  "name": "Find your rhythm",
+  "canvas": {
+    "width": 960,
+    "height": 600,
+    "background": "#efeafb"
+  },
+  "duration": 3600,
+  "elements": [
+    {
+      "id": "motion-sequence-layer-1",
+      "type": "text",
+      "name": "Headline",
+      "visible": true,
+      "locked": false,
+      "content": "Find your own rhythm.",
+      "styles": {
+        "x": 56,
+        "y": 50,
+        "width": 840,
+        "height": 118.8,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#302445",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 44,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    },
+    {
+      "id": "motion-sequence-layer-2",
+      "type": "text",
+      "name": "Supporting text",
+      "visible": true,
+      "locked": false,
+      "content": "Three shapes. One shared timeline.",
+      "styles": {
+        "x": 58,
+        "y": 115,
+        "width": 840,
+        "height": 45.9,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#8b7a9f",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 17,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    },
+    {
+      "id": "motion-sequence-layer-3",
+      "type": "rectangle",
+      "name": "Horizon",
+      "visible": true,
+      "locked": false,
+      "content": "",
+      "styles": {
+        "x": 80,
+        "y": 432,
+        "width": 800,
+        "height": 2,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#d4c8e3",
+        "backgroundTransparent": false,
+        "color": "#302547",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 1,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 48,
+        "fontWeight": 600,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    },
+    {
+      "id": "motion-sequence-layer-4",
+      "type": "rectangle",
+      "name": "Traveling square",
+      "visible": true,
+      "locked": false,
+      "content": "",
+      "styles": {
+        "x": 140,
+        "y": 280,
+        "width": 100,
+        "height": 100,
+        "rotation": -12,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#9571cf",
+        "backgroundTransparent": false,
+        "color": "#302547",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 22,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 48,
+        "fontWeight": 600,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": [
+        {
+          "id": "motion-sequence-key-4-0",
+          "time": 0,
+          "properties": {
+            "x": 140,
+            "y": 280,
+            "rotation": -12
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-4-1",
+          "time": 900,
+          "properties": {
+            "x": 300,
+            "y": 210,
+            "rotation": 78
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-4-2",
+          "time": 1800,
+          "properties": {
+            "x": 430,
+            "y": 280,
+            "rotation": 168
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-4-3",
+          "time": 2700,
+          "properties": {
+            "x": 300,
+            "y": 350,
+            "rotation": 258
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-4-4",
+          "time": 3600,
+          "properties": {
+            "x": 140,
+            "y": 280,
+            "rotation": 348
+          },
+          "easing": "ease-in-out"
+        }
+      ]
+    },
+    {
+      "id": "motion-sequence-layer-5",
+      "type": "circle",
+      "name": "Breathing circle",
+      "visible": true,
+      "locked": false,
+      "content": "",
+      "styles": {
+        "x": 440,
+        "y": 288,
+        "width": 84,
+        "height": 84,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#edb188",
+        "backgroundTransparent": false,
+        "color": "#302547",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 9999,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 48,
+        "fontWeight": 600,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": [
+        {
+          "id": "motion-sequence-key-5-0",
+          "time": 0,
+          "properties": {
+            "y": 288,
+            "scaleX": 0.8,
+            "scaleY": 0.8,
+            "opacity": 0.65
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-5-1",
+          "time": 900,
+          "properties": {
+            "y": 208,
+            "scaleX": 1.1,
+            "scaleY": 1.1,
+            "opacity": 1
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-5-2",
+          "time": 1800,
+          "properties": {
+            "y": 288,
+            "scaleX": 0.8,
+            "scaleY": 0.8,
+            "opacity": 0.65
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-5-3",
+          "time": 2700,
+          "properties": {
+            "y": 350,
+            "scaleX": 1.1,
+            "scaleY": 1.1,
+            "opacity": 1
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-5-4",
+          "time": 3600,
+          "properties": {
+            "y": 288,
+            "scaleX": 0.8,
+            "scaleY": 0.8,
+            "opacity": 0.65
+          },
+          "easing": "ease-in-out"
+        }
+      ]
+    },
+    {
+      "id": "motion-sequence-layer-6",
+      "type": "rectangle",
+      "name": "Swinging pill",
+      "visible": true,
+      "locked": false,
+      "content": "",
+      "styles": {
+        "x": 660,
+        "y": 300,
+        "width": 140,
+        "height": 60,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#40304f",
+        "backgroundTransparent": false,
+        "color": "#302547",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 30,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 48,
+        "fontWeight": 600,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": [
+        {
+          "id": "motion-sequence-key-6-0",
+          "time": 0,
+          "properties": {
+            "x": 660,
+            "rotation": 0
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-6-1",
+          "time": 1200,
+          "properties": {
+            "x": 560,
+            "rotation": -14
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-6-2",
+          "time": 2400,
+          "properties": {
+            "x": 660,
+            "rotation": 14
+          },
+          "easing": "ease-in-out"
+        },
+        {
+          "id": "motion-sequence-key-6-3",
+          "time": 3600,
+          "properties": {
+            "x": 660,
+            "rotation": 0
+          },
+          "easing": "ease-in-out"
+        }
+      ]
+    },
+    {
+      "id": "motion-sequence-layer-7",
+      "type": "text",
+      "name": "Footer",
+      "visible": true,
+      "locked": false,
+      "content": "DESIGN IN SPACE. COMPOSE IN TIME.",
+      "styles": {
+        "x": 56,
+        "y": 518,
+        "width": 840,
+        "height": 32.4,
+        "rotation": 0,
+        "rotationY": 0,
+        "reveal": 1,
+        "glow": 0,
+        "shimmer": 0,
+        "shimmerEnabled": false,
+        "spinnerEnabled": false,
+        "scaleX": 1,
+        "scaleY": 1,
+        "opacity": 1,
+        "backgroundColor": "#faf9ff",
+        "backgroundTransparent": true,
+        "color": "#9a86aa",
+        "borderWidth": 0,
+        "borderStyle": "solid",
+        "borderColor": "#6c4bb8",
+        "borderRadius": 16,
+        "boxShadow": "none",
+        "fontFamily": "Inter, sans-serif",
+        "fontSize": 12,
+        "fontWeight": 500,
+        "transformOrigin": "50% 50%"
+      },
+      "keyframes": []
+    }
+  ],
+  "output": {
+    "iterations": "infinite",
+    "direction": "normal",
+    "fill": "both",
+    "delay": 0,
+    "speed": 1
+  }
+}
