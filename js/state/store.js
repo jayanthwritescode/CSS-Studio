@@ -1,3 +1,5 @@
+import { isValidElement, newId, validateStylePatch } from '../elements/model.js';
+
 /** Project data is serializable; workspace view state is kept separate. */
 export const LIMITS = Object.freeze({ minDimension: 64, maxDimension: 4096, minZoom: 0.05, maxZoom: 2 });
 
@@ -11,7 +13,8 @@ export function createInitialState() {
       duration: 3000,
       elements: [],
     },
-    view: { zoom: 0.5, grid: true, fit: true },
+    view: { zoom: 0.5, grid: true, fit: true, panX: 0, panY: 0 },
+    selection: null,
   };
 }
 
@@ -43,10 +46,77 @@ export function reduce(state, action) {
       if (zoom === state.view.zoom && fit === state.view.fit) return state;
       return { ...state, view: { ...state.view, zoom, fit } };
     }
+    case 'view/pan': {
+      if (!Number.isFinite(action.x) || !Number.isFinite(action.y) || Math.abs(action.x) > 100000 || Math.abs(action.y) > 100000) return state;
+      const fit = action.fit === true;
+      if (action.x === state.view.panX && action.y === state.view.panY && fit === state.view.fit) return state;
+      return { ...state, view: { ...state.view, panX: action.x, panY: action.y, fit } };
+    }
     case 'view/grid': {
       const grid = Boolean(action.visible);
       if (grid === state.view.grid) return state;
       return { ...state, view: { ...state.view, grid } };
+    }
+    case 'selection/set': {
+      const selection = action.id === null || state.project.elements.some(element => element.id === action.id) ? action.id : state.selection;
+      return selection === state.selection ? state : { ...state, selection };
+    }
+    case 'element/add': {
+      if (!isValidElement(action.element) || state.project.elements.some(element => element.id === action.element.id)) return state;
+      const element = structuredClone(action.element);
+      return { ...state, project: { ...state.project, elements: [...state.project.elements, element] }, selection: element.id };
+    }
+    case 'element/update': {
+      const element = state.project.elements.find(item => item.id === action.id);
+      if (!element || element.locked) return state;
+      const patch = validateStylePatch(action.styles);
+      if (!patch || Object.keys(patch).every(key => element.styles[key] === patch[key])) return state;
+      return updateElement(state, element.id, { ...element, styles: { ...element.styles, ...patch } });
+    }
+    case 'element/content': {
+      const element = state.project.elements.find(item => item.id === action.id);
+      if (!element || element.locked || element.type !== 'text' || typeof action.content !== 'string' || action.content.length > 10000 || action.content === element.content) return state;
+      return updateElement(state, element.id, { ...element, content: action.content });
+    }
+    case 'element/rename': {
+      const element = state.project.elements.find(item => item.id === action.id);
+      if (!element || typeof action.name !== 'string') return state;
+      const name = action.name.trim().slice(0, 80) || element.name;
+      return name === element.name ? state : updateElement(state, element.id, { ...element, name });
+    }
+    case 'element/visibility':
+    case 'element/lock': {
+      const element = state.project.elements.find(item => item.id === action.id);
+      if (!element) return state;
+      const key = action.type === 'element/lock' ? 'locked' : 'visible';
+      return updateElement(state, element.id, { ...element, [key]: !element[key] });
+    }
+    case 'element/delete': {
+      const element = state.project.elements.find(item => item.id === action.id);
+      if (!element || element.locked) return state;
+      return { ...state, project: { ...state.project, elements: state.project.elements.filter(item => item.id !== element.id) }, selection: state.selection === element.id ? null : state.selection };
+    }
+    case 'element/duplicate': {
+      const index = state.project.elements.findIndex(item => item.id === action.id);
+      if (index < 0) return state;
+      const copy = structuredClone(state.project.elements[index]);
+      copy.id = newId();
+      copy.name = `${copy.name.slice(0, 73)} copy`;
+      copy.locked = false;
+      copy.styles.x = Math.min(100000, copy.styles.x + 24);
+      copy.styles.y = Math.min(100000, copy.styles.y + 24);
+      const elements = [...state.project.elements];
+      elements.splice(index + 1, 0, copy);
+      return { ...state, project: { ...state.project, elements }, selection: copy.id };
+    }
+    case 'element/reorder': {
+      const index = state.project.elements.findIndex(item => item.id === action.id);
+      if (index < 0 || state.project.elements[index].locked || ![-1, 1].includes(action.direction)) return state;
+      const nextIndex = index + action.direction;
+      if (nextIndex < 0 || nextIndex >= state.project.elements.length) return state;
+      const elements = [...state.project.elements];
+      [elements[index], elements[nextIndex]] = [elements[nextIndex], elements[index]];
+      return { ...state, project: { ...state.project, elements } };
     }
     default: return state;
   }
@@ -77,3 +147,9 @@ function deepFreeze(value) {
   }
   return value;
 }
+
+function updateElement(state, id, next) {
+  return { ...state, project: { ...state.project, elements: state.project.elements.map(element => element.id === id ? next : element) } };
+}
+
+export const selectedElement = state => state.project.elements.find(element => element.id === state.selection) ?? null;

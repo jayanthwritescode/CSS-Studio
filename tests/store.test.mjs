@@ -32,7 +32,7 @@ test('invalid canvas input cannot corrupt project state', () => {
 test('zoom is bounded and manual zoom leaves fit mode', () => {
   const store = createStore();
   store.dispatch({ type: 'view/zoom', zoom: 100 });
-  assert.deepEqual(store.getState().view, { zoom: 2, fit: false, grid: true });
+  assert.deepEqual(store.getState().view, { zoom: 2, fit: false, grid: true, panX: 0, panY: 0 });
   store.dispatch({ type: 'view/zoom', zoom: 0 });
   assert.equal(store.getState().view.zoom, 0.05);
   const previous = store.getState();
@@ -71,4 +71,20 @@ test('stores do not share mutable input', () => {
   const store = createStore(initial);
   initial.project.canvas.width = 99;
   assert.equal(store.getState().project.canvas.width, 1280);
+});
+
+test('panning is view-only and fit can reset its offset', () => {
+  const store = createStore();
+  const project = store.getState().project;
+  store.dispatch({ type: 'view/pan', x: 120, y: -45 });
+  assert.equal(store.getState().project, project);
+  assert.equal(store.getState().view.panX, 120);
+  assert.equal(store.getState().view.fit, false);
+  const previous = store.getState();
+  store.dispatch({ type: 'view/pan', x: Infinity, y: 0 });
+  assert.equal(store.getState(), previous);
+  store.dispatch({ type: 'view/pan', x: 0, y: 0, fit: true });
+  assert.equal(store.getState().view.panX, 0);
+  assert.equal(store.getState().view.panY, 0);
+  assert.equal(store.getState().view.fit, true);
 });

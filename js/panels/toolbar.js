@@ -18,13 +18,16 @@ export function mountToolbar(store, canvas) {
     zoomOut.disabled = view.zoom <= LIMITS.minZoom;
     grid.setAttribute('aria-pressed', String(view.grid));
   }
-  name.addEventListener('change', () => {
+  let nameBeforeEdit = store.getState().project.name;
+  name.addEventListener('focus', () => { nameBeforeEdit = store.getState().project.name; });
+  name.addEventListener('input', () => store.dispatch({ type: 'project/rename', name: name.value }));
+  name.addEventListener('blur', () => {
     store.dispatch({ type: 'project/rename', name: name.value });
     name.value = store.getState().project.name;
   });
   name.addEventListener('keydown', event => {
     if (event.key === 'Enter') { event.preventDefault(); name.blur(); }
-    if (event.key === 'Escape') { name.value = store.getState().project.name; name.blur(); }
+    if (event.key === 'Escape') { name.value = nameBeforeEdit; name.blur(); }
   });
   zoomIn.addEventListener('click', () => changeZoom(1.25));
   zoomOut.addEventListener('click', () => changeZoom(0.8));
@@ -34,7 +37,7 @@ export function mountToolbar(store, canvas) {
     store.dispatch({ type: 'view/grid', visible: true });
     canvas.fit();
   });
-  for (const id of ['help', 'roadmap']) document.getElementById(id).addEventListener('click', () => guide.showModal());
+  document.querySelector('#help').addEventListener('click', () => guide.showModal());
   document.querySelector('#close-guide').addEventListener('click', () => guide.close());
   guide.addEventListener('click', event => { if (event.target === guide) {
     const bounds = guide.getBoundingClientRect();

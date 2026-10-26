@@ -29,3 +29,30 @@ Validation: six state tests pass. Browser checks cover rename, preset/custom dim
 Phase 1 handoff: review the local preview, commit/push this batch, then ask for Phase 2.
 
 Suggested commit message: `feat: establish MotionLab workspace foundation`
+
+## Phase 2 — Canvas editor
+
+Implemented:
+
+- Element factory, validated immutable actions, and separate selection state.
+- Rectangle, circle, text, and local image creation; safe literal text rendering.
+- Canvas selection, zoom-aware dragging, eight resize handles, continuous rotation, Shift rotation snapping, and gesture cancellation.
+- Resize math preserves the opposite anchor across rotation, nonuniform scale, and transform origins.
+- Layer selection, rename, duplicate, visibility, lock, delete, and front/back ordering.
+- Live transform, fill, transparency, border, shadow, typography, and origin fields.
+- Alignment based on transformed bounds, keyboard nudging, element shortcuts.
+- Free pan at all zoom levels, middle-drag, view reset, and responsive Layers drawer.
+- Image validation/decoding with byte and pixel limits; embedded project asset data.
+- Removed all phase numbers, build-roadmap content, future-phase teasers, and development-status copy from the website. Replaced the roadmap with real keyboard help and the inactive timeline scaffold with functional selection actions.
+
+Validation:
+
+- 18 automated state/model/geometry tests pass.
+- Browser-verified: add rectangle/text/image, drag/resize/rotate, layer rename/reorder/duplicate/hide/lock, keyboard create/duplicate/delete/nudge, text family/size/content, literal HTML-like content, fill/border/shadow edits, transform origin/scale/opacity, transformed alignment, pan and fit reset.
+- Rotated/scaled browser alignment center error measured below 0.001 screen px.
+- Narrow layout verified. Full desktop browser sizing and Chromium compatibility remain for the final validation batch.
+- Source search confirms no phase/roadmap/foundation references in HTML, JavaScript, or CSS.
+
+Handoff: stop here for the user's GitHub push. Do not start Phase 3 until the user confirms the push and asks to continue.
+
+Suggested commit message: `feat: add interactive canvas editor and layer controls`
