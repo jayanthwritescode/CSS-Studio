@@ -115,3 +115,30 @@ Next-batch implementation notes:
 Handoff: stop for the user's GitHub push. Continue with Phase 5 only when requested.
 
 Suggested commit message: `feat: add editable animation presets and visual easing editor`
+
+
+## Phase 5 — Persistence, export, and history
+
+Implemented:
+
+- IndexedDB projects/catalog/current-document storage with save status, 600 ms autosave, immediate Save/Cmd+S, startup restoration, and serialized writes.
+- New/open/rename/duplicate projects, recoverable Trash/Restore, complete JSON backup, validated import into a fresh project ID, and image signature/decode checks.
+- Input/schema migration and limits: 64 MB JSON, 500 elements, 20,000 frames, 32 MB embedded image data. Missing legacy style defaults and keyframe IDs migrate.
+- Bounded immutable history, grouped pointer/field interactions, cancel-safe rollback, atomic multi-layer presets, keyboard/toolbar undo/redo. View/playback preferences remain separate from undo context.
+- Native CSS generator with independent registered numeric property tracks, explicit endpoints, per-segment easing, RGB channel interpolation, safe class names, and complete effect/style composition.
+- Matching HTML, self-contained responsive demo, and JSON export. Syntax highlighting, full copy/download, live sandboxed native preview, and persisted iteration/direction/fill/delay/speed preferences.
+- Constant tracks are omitted. Text reveal uses its inner span; shape reveal clipping is consistent throughout its track in preview/export. Switching documents clears canvas node caches to avoid shared-ID asset reuse.
+- Development references remain outside the website.
+
+Validation:
+
+- 59 automated tests pass across the full suite, including all 24 preset exports, serialization/migration/rejection, history grouping/cancel/redo, document boundaries, output settings, HTML escaping, and clipping semantics.
+- Browser-verified: save and autosave survive reload; six-layer imported project retains all keyframes and an 8×8 embedded PNG; corrupt JSON leaves the current project intact; duplicate/Trash/Restore/open work.
+- Repeated numeric edits undo together. A real canvas drag creates exactly one history step; Cmd+Z restores its original position and Cmd+Shift+Z restores the drag.
+- Export options update generated CSS; clipboard copy succeeds; downloaded JSON was read and parsed, retaining all six elements, the image, and output preferences.
+- Fixed-time native export check at 1500 ms: X=150, Y≈109.346, rotation=90°, opacity=0.7, RGB(128,128,128), matching the engine despite independent sparse keys/easing. Typewriter clip=50%, glow=18 px, 3D flip=180°, and shimmer position=0% also match.
+- Native CSS checks use the in-app browser; final Chromium, responsive, sample-project, and broader cross-feature validation remain for Phase 6.
+
+Handoff: stop for the user's GitHub push. Continue with Phase 6 only when requested.
+
+Suggested commit message: `feat: add local projects, native export, and grouped history`

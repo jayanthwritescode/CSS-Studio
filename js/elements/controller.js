@@ -13,8 +13,11 @@ export function mountElements(store, notify) {
     let number = 1;
     while (names.has(`${label} ${number}`)) number++;
     const element = createElement(type, project.canvas, number - 1, asset);
+    const before = store.getState();
     store.dispatch({ type: 'element/add', element });
+    if (before === store.getState()) { notify('Project limit reached: up to 500 elements and 32 MB of embedded image data.'); return false; }
     document.querySelector('#viewport').focus({ preventScroll: true });
+    return true;
   }
   function requestAdd(type) {
     menu.open = false;
@@ -64,8 +67,7 @@ export function mountElements(store, notify) {
         image.src = src;
       });
       if (image.naturalWidth * image.naturalHeight > 40_000_000) throw new Error('Image too large');
-      add('image', { src, width: image.naturalWidth, height: image.naturalHeight });
-      notify('Image added to the canvas.');
+      if (add('image', { src, width: image.naturalWidth, height: image.naturalHeight })) notify('Image added to the canvas.');
     } catch {
       notify('This image could not be opened. Try a valid image under 40 megapixels.');
     } finally { imagePending = false; }

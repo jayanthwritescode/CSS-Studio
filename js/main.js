@@ -1,3 +1,6 @@
+import { mountProjectManager } from './storage/project-manager.js';
+import { mountExport } from './export/panel.js';
+import { mountHistory } from './state/history-controls.js';
 import { mountPresets } from './panels/presets.js';
 import { mountEasingEditor } from './panels/easing-editor.js';
 import { createPlayback } from './animation/engine.js';
@@ -22,6 +25,11 @@ function notify(message) {
   notificationTimer = setTimeout(() => { notification.hidden = true; }, 6000);
 }
 const playback = createPlayback(store);
+const workspace = document.querySelector('.workspace');
+const toolbar = document.querySelector('.toolbar');
+workspace.inert = toolbar.inert = true;
+await mountProjectManager(store, playback, notify);
+workspace.inert = toolbar.inert = false;
 const canvas = mountCanvas(store);
 mountProperties(store);
 mountElementProperties(store, playback);
@@ -34,3 +42,6 @@ mountTimeline(store, playback, notify);
 
 mountPresets(store, playback, notify);
 mountEasingEditor(store, playback);
+
+mountHistory(store, playback);
+mountExport(store, playback, notify);

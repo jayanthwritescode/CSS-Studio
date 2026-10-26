@@ -19,3 +19,6 @@ export function elementStyles(styles, type) {
     backgroundPosition: `${styles.shimmer}% 0`,
   };
 }
+
+// A shape reveal uses a clipping box for the whole track, including its effects.
+export const usesRevealClip = element => element.type !== 'text' && (element.styles.reveal < 1 || element.keyframes.some(frame => frame.properties.reveal < 1));

@@ -2,7 +2,7 @@
 
 A browser-based visual CSS animation studio built with HTML, CSS, and vanilla JavaScript ES modules. No build step, frontend framework, or production dependencies.
 
-The canvas editor, keyframe engine, interactive timeline, 24 animation presets, and graphical easing editor are implemented. Persistence, history, and export are the next internal development batch. The product interface contains only working tools and product guidance; build checkpoints live in [PHASES.md](PHASES.md).
+The canvas editor, keyframe engine, interactive timeline, 24 animation presets, and graphical easing editor are implemented. Local project management, autosave, undo/redo, and native CSS/HTML/JSON export are also implemented. The final internal batch covers samples, polish, and broader validation. The product interface contains only working tools and product guidance; build checkpoints live in [PHASES.md](PHASES.md).
 
 ## Run locally
 
@@ -30,7 +30,7 @@ Open http://127.0.0.1:8000. Use HTTP instead of opening `index.html` through `fi
 
 Image import supports PNG, JPEG, WebP, and GIF files up to 5 MB and 40 megapixels. Files are decoded before adding; invalid files produce a notification. Image data lives in the project model as a data URL with no remote asset dependency.
 
-**Changes currently live in memory and reset on reload.** Persistence, autosave, JSON import/export, CSS/HTML export, and undo/redo are not yet implemented. Do not use this development build for work that needs saving. The empty-canvas artwork is editor guidance, not a project element.
+**Projects autosave in IndexedDB in this browser.** The header reports saving, saved, or failed status. The empty-canvas artwork is editor guidance, not a project element.
 
 ## Animate a composition
 
@@ -81,6 +81,37 @@ Select a timeline keyframe to reveal its easing graph in Properties. Drag either
 
 The graph, generated CSS value, and actual keyframe easing update together. A dot previews the selected easing; **Replay** runs it again. Automatic preview respects reduced motion, with explicit Replay still available. Stepped easing displays a staircase graph and disables cubic control points; change to a cubic easing to use the handles.
 
+## Projects and backups
+
+Use **Projects** to open, rename, duplicate, or create a project. Rename directly in its library row (Enter commits), or edit the open project's title. **Trash** removes a project from the active library; enable **Show Trash** to restore it. Trashing the open project creates a fresh blank workspace. There is no permanent-delete control.
+
+Changes autosave about 600 ms after the latest project-data edit. **Save** and Ctrl/Cmd + S save immediately. Playback, seeking, selection, and view changes do not produce saves. Reopening restores canvas settings, layers, styles, keyframes, embedded images, and export preferences. Workspace selection/view/playback position and undo history start fresh.
+
+Local storage belongs to the exact browser and origin: `127.0.0.1:8000` and `localhost:8000` have separate libraries. Export JSON to move a project between browsers, origins, or devices. If local storage cannot be opened or a save fails, the header reports that state and JSON export remains available.
+
+**Import** accepts MotionLab JSON and always creates a new local project. It validates schema/version, identifiers, style values, timestamps/easing, limits, and image signatures/decoding before replacing the open workspace. Missing older style defaults and keyframe IDs are migrated. Unsupported or corrupt files leave the open project intact.
+
+Limits: project JSON up to 64 MB; 500 elements; 20,000 keyframes; 32 MB total embedded image data. Each image must also satisfy the image import limits above. **Download current project JSON** in Projects, or the JSON tab in Export, creates a complete editable backup with embedded assets.
+
+## Undo and redo
+
+Toolbar Undo/Redo and Ctrl/Cmd + Z / Ctrl/Cmd + Shift + Z restore project edits, including creation/deletion, transforms, styling, keyframes, layer order, and presets. A drag, resize, rotation, easing drag, or continuous field edit is one history step. Canceled gestures leave no extra entry. Multi-layer presets undo as one action. History retains up to 100 steps for the open document and resets when opening another document; redo clears after a new edit. Text fields keep normal native text undo while focused.
+
+## Export
+
+**Export** offers syntax-highlighted source, full-source copy/download, and a live native CSS preview:
+
+- **CSS:** registered custom properties, `@keyframes`, element styles, and animation timing.
+- **HTML:** matching markup/classes, including embedded images and text-sized reveal spans; pair it with the CSS.
+- **Demo:** a self-contained HTML document containing CSS, markup, and embedded assets. Its small script only fits the layout to the viewport; all animation runs in CSS.
+- **JSON:** the editable MotionLab project.
+
+Export playback preferences include iterations/infinite, direction, fill mode, an additional composition delay, and speed. These settings are saved with the project and shown in the native export preview. Workspace transport is an audition tool; its loop/direction/speed do not overwrite export preferences. Preset/keyframe delays already baked into tracks remain intact; the export delay is added before the whole composition.
+
+The generator uses registered numeric CSS properties so X, Y, rotation, scale, colors, and effects retain independent key times and segment easings. Colors use numeric RGB channels to match editor interpolation. Constant tracks equal to base styles are omitted. Transform order, clipping, shimmer, glow, 3D rotation, notched strokes, typography, and layer visibility follow the editor. Non-text reveal tracks clip the entire shape and its effects to a box throughout the reveal; text clips its text-sized inner span.
+
+Use a modern browser supporting `@property` for animated exports. Source previews are capped at 100,000 characters for responsiveness; copy/download includes the complete source. User text and labels are escaped in generated HTML, and imported image assets stay embedded.
+
 ## Keyboard shortcuts
 
 Shortcuts do not intercept typing in fields or normal modified browser shortcuts, except the editor's documented duplicate command.
@@ -94,6 +125,8 @@ Shortcuts do not intercept typing in fields or normal modified browser shortcuts
 | Arrow keys | Move selection by 1 px |
 | Shift + Arrow keys | Move selection by 10 px |
 | Ctrl/Cmd + D | Duplicate selection |
+| Ctrl/Cmd + Z / Ctrl/Cmd + Shift + Z | Undo / redo outside text fields |
+| Ctrl/Cmd + S | Save project locally |
 | Delete / Backspace | Delete selected keyframe inside the timeline; otherwise delete unlocked element |
 | `F` | Fit canvas and reset pan |
 | `G` | Toggle grid |
@@ -114,8 +147,11 @@ css/canvas.css                     Artboard, elements, selection handles
 css/editor.css                     Editor tools, layers, properties
 css/timeline.css                   Timeline, transport, tracks, markers
 css/motion-tools.css               Preset library and visual easing controls
+css/project-tools.css              Project library, history buttons, export UI
 js/main.js                         App composition and notifications
 js/state/store.js                  Validated immutable project/view/selection state
+js/state/history.js                Bounded structural-sharing snapshot history
+js/state/history-controls.js       Gesture/field grouping and history shortcuts
 js/elements/model.js               Element factory and style validation
 js/elements/styles.js              Shared CSS composition for elements/previews
 js/elements/controller.js          Element actions, image decoding, shortcuts
@@ -137,9 +173,16 @@ js/animation/presets.js            Pure preset-to-keyframe generators
 js/animation/easing-geometry.js    Graph coordinate mapping and constraints
 js/animation/engine.js             Single playback scheduler and transport
 js/animation/timeline.js           Tracks, seeking, marker interaction, timeline UI
+js/storage/projects.js             IndexedDB documents, catalog, current project
+js/storage/serialization.js        Import validation, migrations, serialization
+js/storage/project-manager.js      Autosave and local project lifecycle
+js/export/css-generator.js         Independent native CSS animation tracks
+js/export/html-generator.js        Matching markup and standalone demos
+js/export/panel.js                 Source formats, native preview, output settings
+js/export/download.js              Downloads, clipboard, safe syntax highlighting
 ```
 
-Project data remains serializable and separate from transient selection, playback, zoom, and pan. Rendering, pointer geometry, animation evaluation, and playback scheduling are separate modules. Export and history will be added in their designated batches.
+Project data remains serializable and separate from transient selection, playback, zoom, and pan. Rendering, pointer geometry, animation evaluation, and playback scheduling are separate modules. History and persistence observe project data only; transport and workspace state remain separate.
 
 ## Verification
 
@@ -149,8 +192,17 @@ The app has no Node runtime dependency. With Node.js 22.7+, run the optional dev
 node --test tests/*.test.mjs
 ```
 
-47 tests cover all 24 preset generators, delayed starts, multi-element presets, stepped text reveals, effect CSS, compatibility/lock constraints, easing graph coordinates, and sparse property interpolation, endpoints, missing/duplicate timestamps, color transitions, custom easing, single-scheduler pause/resume, reverse/loop/stop/restart, auto-key isolation, frame operations, duration rescaling/collisions, animated duplication, gesture rollback, and state validation, immutable updates, project serialization, zoom/pan bounds, element creation, lock protection, duplication/deletion, layer order, plain-text content, style injection rejection, rotated resizing across all handles and origins, size clamping, rotation snapping, and transformed bounds.
+59 tests cover serialization/import validation, grouped undo/redo, canceled gestures, document switching, export structure and escaping, output settings, all preset exports, and all 24 preset generators, delayed starts, multi-element presets, stepped text reveals, effect CSS, compatibility/lock constraints, easing graph coordinates, and sparse property interpolation, endpoints, missing/duplicate timestamps, color transitions, custom easing, single-scheduler pause/resume, reverse/loop/stop/restart, auto-key isolation, frame operations, duration rescaling/collisions, animated duplication, gesture rollback, and state validation, immutable updates, project serialization, zoom/pan bounds, element creation, lock protection, duplication/deletion, layer order, plain-text content, style injection rejection, rotated resizing across all handles and origins, size clamping, rotation snapping, and transformed bounds.
 
-Browser checks verify preset search/application/timing, visual easing inputs and dragging, real 3D/shimmer/glow effects, text-sized typewriter reveals, and exact midpoint animation values, easing effects, independent element tracks, duration rescaling, keyframe-time editing, invalid easing feedback, marker and playhead dragging, keyframe deletion, playback/reverse/speed/stop, timeline zoom, and actual element creation, dragging/resizing/rotation at non-100% zoom, text editing, image import, appearance controls, transformed alignment, layer visibility/locking/renaming/reordering, duplication/deletion, pan/fit, and keyboard shortcuts. Full Chromium compatibility and cross-feature validation remain on the internal roadmap.
+Browser checks verify IndexedDB save/reopen/autosave, embedded image persistence, valid/corrupt JSON import, project duplicate/Trash/Restore, grouped property/drag undo and keyboard redo, export copy/settings/JSON download, native CSS midpoint parity, preset search/application/timing, visual easing inputs and dragging, real 3D/shimmer/glow effects, text-sized typewriter reveals, and exact midpoint animation values, easing effects, independent element tracks, duration rescaling, keyframe-time editing, invalid easing feedback, marker and playhead dragging, keyframe deletion, playback/reverse/speed/stop, timeline zoom, and actual element creation, dragging/resizing/rotation at non-100% zoom, text editing, image import, appearance controls, transformed alignment, layer visibility/locking/renaming/reordering, duplication/deletion, pan/fit, and keyboard shortcuts. Full Chromium compatibility and cross-feature validation remain on the internal roadmap.
+
+For a reproducible native-export check containing every preset plus sparse independent property tracks:
+
+```sh
+node tests/build-export-fixture.mjs /tmp/motionlab-export-check
+python3 -m http.server 8001 --bind 127.0.0.1 --directory /tmp/motionlab-export-check
+```
+
+Open http://127.0.0.1:8001 and compare computed properties against `expected.json`. The fixture pauses native CSS at 1500 ms; its script only scales layout.
 
 See the [original project brief](docs/PROJECT-BRIEF.md) for full intended functionality and [batch checkpoints](PHASES.md) for development progress.

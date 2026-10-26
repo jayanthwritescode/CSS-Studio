@@ -1,3 +1,5 @@
+import { createHistory } from './history.js';
+import { normalizeProject, normalizeOutput } from '../storage/serialization.js';
 import { editElementStyles, initialTimeline, reduceAnimation } from '../animation/reducer.js';
 import { validFrames } from '../animation/keyframes.js';
 import { isValidElement, newId, validateStylePatch } from '../elements/model.js';
@@ -14,6 +16,7 @@ export function createInitialState() {
       canvas: { width: 1280, height: 720, background: '#faf9ff' },
       duration: 3000,
       elements: [],
+      output: normalizeOutput(),
     },
     view: { zoom: 0.5, grid: true, fit: true, panX: 0, panY: 0 },
     selection: null,
@@ -26,6 +29,15 @@ export function reduce(state, action) {
   const animation = reduceAnimation(state, action);
   if (animation !== undefined) return animation;
   switch (action.type) {
+    case 'project/load': {
+      try {
+        return { ...state, project: normalizeProject(action.project), selection: null, timeline: initialTimeline(), view: { ...state.view, fit: true, panX: 0, panY: 0 } };
+      } catch { return state; }
+    }
+    case 'project/output': {
+      try { return { ...state, project: { ...state.project, output: normalizeOutput(action.output) } }; }
+      catch { return state; }
+    }
     case 'project/rename': {
       if (typeof action.name !== 'string') return state;
       const name = action.name.trim().slice(0, 80) || 'Untitled motion';
@@ -68,7 +80,9 @@ export function reduce(state, action) {
       return selection === state.selection ? state : { ...state, selection, timeline: { ...state.timeline, keyframeId: null } };
     }
     case 'element/add': {
-      if (!isValidElement(action.element) || !validFrames(action.element.keyframes, state.project.duration) || state.project.elements.some(element => element.id === action.element.id)) return state;
+      if (state.project.elements.length >= 500 || !isValidElement(action.element) || !validFrames(action.element.keyframes, state.project.duration) || state.project.elements.some(element => element.id === action.element.id)) return state;
+      if (action.element.type === 'image' && state.project.elements.reduce((sum, item) => sum + (item.src?.length ?? 0), action.element.src.length) > 32 * 1024 * 1024) return state;
+      if (state.project.elements.reduce((sum, item) => sum + item.keyframes.length, action.element.keyframes.length) > 20000) return state;
       const element = structuredClone(action.element);
       element.keyframes.sort((a, b) => a.time - b.time);
       return { ...state, project: { ...state.project, elements: [...state.project.elements, element] }, selection: element.id, timeline: { ...state.timeline, keyframeId: null } };
@@ -105,7 +119,10 @@ export function reduce(state, action) {
     }
     case 'element/duplicate': {
       const index = state.project.elements.findIndex(item => item.id === action.id);
-      if (index < 0) return state;
+      if (index < 0 || state.project.elements.length >= 500) return state;
+      const source = state.project.elements[index];
+      if (source.src && state.project.elements.reduce((sum, item) => sum + (item.src?.length ?? 0), source.src.length) > 32 * 1024 * 1024) return state;
+      if (state.project.elements.reduce((sum, item) => sum + item.keyframes.length, source.keyframes.length) > 20000) return state;
       const copy = structuredClone(state.project.elements[index]);
       copy.id = newId();
       copy.name = `${copy.name.slice(0, 73)} copy`;
@@ -133,18 +150,31 @@ export function reduce(state, action) {
 export function createStore(initialState = createInitialState()) {
   let state = deepFreeze(structuredClone(initialState));
   const listeners = new Set();
+  const history = createHistory();
+  const snapshot = () => ({ project: state.project, selection: state.selection, timeline: { time: state.timeline.time, mode: state.timeline.mode, keyframeId: state.timeline.keyframeId } });
+  const emit = action => { for (const listener of listeners) listener(state, action); };
+  function restore(saved, type) {
+    if (!saved) return;
+    state = deepFreeze({ ...state, ...saved, timeline: { ...state.timeline, ...saved.timeline, playing: false } });
+    emit({ type });
+  }
   return {
     getState: () => state,
     dispatch(action) {
+      const before = snapshot();
       const next = reduce(state, action);
       if (next === state) return;
       state = deepFreeze(next);
-      for (const listener of listeners) listener(state, action);
+      if (action.type === 'project/load') history.clear();
+      else history.record(before, snapshot());
+      emit(action);
     },
-    subscribe(listener) {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    },
+    beginTransaction() { history.begin(snapshot()); },
+    endTransaction() { history.end(snapshot()); emit({ type: 'history/change' }); },
+    undo() { restore(history.undo(snapshot()), 'history/undo'); },
+    redo() { restore(history.redo(snapshot()), 'history/redo'); },
+    getHistory: () => ({ canUndo: history.canUndo, canRedo: history.canRedo }),
+    subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
   };
 }
 

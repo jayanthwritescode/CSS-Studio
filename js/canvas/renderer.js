@@ -1,4 +1,4 @@
-import { elementStyles } from '../elements/styles.js';
+import { elementStyles, usesRevealClip } from '../elements/styles.js';
 import { displayedStyles } from '../animation/interpolation.js';
 import { selectedElement } from '../state/store.js';
 
@@ -74,6 +74,7 @@ export function mountCanvas(store) {
         text.style.clipPath = `inset(0 ${(1 - pose.reveal) * 100}% 0 0)`;
       }
       applyElementStyles(node, pose, element.type);
+      if (usesRevealClip(element)) node.style.clipPath = `inset(0 ${(1 - pose.reveal) * 100}% 0 0)`;
       node.style.zIndex = index;
       node.hidden = !element.visible;
       node.classList.toggle('is-locked', element.locked);
@@ -101,8 +102,9 @@ export function mountCanvas(store) {
     viewport.scrollTop = 0;
   }
   const unsubscribe = store.subscribe((state, action) => {
+    if (action.type === 'project/load') { for (const node of nodes.values()) node.remove(); nodes.clear(); }
     render(state);
-    if (action.type === 'canvas/resize' && state.view.fit) fit();
+    if (['canvas/resize', 'project/load'].includes(action.type) && state.view.fit) fit();
   });
   const observer = new ResizeObserver(() => { if (store.getState().view.fit) fit(); });
   observer.observe(viewport);

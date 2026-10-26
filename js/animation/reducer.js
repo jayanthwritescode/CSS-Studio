@@ -19,6 +19,7 @@ export function editElementStyles(state, element, patch) {
   const base = Object.fromEntries(Object.entries(patch).filter(([key]) => !ANIMATABLE.includes(key)));
   const next = { ...element, styles: { ...element.styles, ...base } };
   if (!Object.keys(animated).length) return update(state, next);
+  if (!element.keyframes.some(frame => frame.time === Math.round(state.timeline.time)) && state.project.elements.reduce((sum, item) => sum + item.keyframes.length, 0) >= 19999) return state;
   const { keyframes, frame } = upsertFrame(next, Math.round(state.timeline.time), animated);
   return { ...update(state, { ...next, keyframes }), selection: element.id, timeline: { ...state.timeline, time: frame.time, keyframeId: frame.id } };
 }
@@ -30,7 +31,8 @@ export function reduceAnimation(state, action) {
       const element = find(state, action.id);
       if (!element) return state;
       const result = buildPreset(element, action.presetId, action.options, state.project.duration);
-      if (!result) return state;
+      if (!result || state.project.elements.length + result.elements.length - 1 > 500) return state;
+      if (state.project.elements.reduce((sum, item) => sum + item.keyframes.length, 0) - element.keyframes.length + result.elements.reduce((sum, item) => sum + item.keyframes.length, 0) > 20000) return state;
       const elements = state.project.elements.flatMap(item => item.id === element.id ? result.elements : [item]);
       return { ...state, project: { ...state.project, duration: result.duration, elements }, selection: element.id,
         timeline: { ...timeline, time: action.options.delay, playing: false, mode: 'keyframe', keyframeId: result.elements[0].keyframes.find(frame => frame.time === action.options.delay).id } };
@@ -74,6 +76,7 @@ export function reduceAnimation(state, action) {
       const element = find(state, action.id);
       if (!element || element.locked) return state;
       const time = Math.round(timeline.time);
+      if (!element.keyframes.some(frame => frame.time === time) && state.project.elements.reduce((sum, item) => sum + item.keyframes.length, 0) >= 19999) return state;
       const properties = validateProperties(animatedProperties(evaluateElement(element, time, state.project.duration)));
       if (!properties) return state;
       const { keyframes, frame } = upsertFrame(element, time, properties);
