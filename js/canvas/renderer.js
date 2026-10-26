@@ -1,17 +1,9 @@
+import { elementStyles } from '../elements/styles.js';
 import { displayedStyles } from '../animation/interpolation.js';
 import { selectedElement } from '../state/store.js';
 
-export function applyElementStyles(node, styles) {
-  Object.assign(node.style, {
-    width: `${styles.width}px`, height: `${styles.height}px`,
-    transform: `translate(${styles.x}px, ${styles.y}px) rotate(${styles.rotation}deg) scale(${styles.scaleX}, ${styles.scaleY})`,
-    transformOrigin: styles.transformOrigin,
-    opacity: styles.opacity,
-    backgroundColor: styles.backgroundTransparent ? 'transparent' : styles.backgroundColor,
-    color: styles.color, border: `${styles.borderWidth}px ${styles.borderStyle} ${styles.borderColor}`,
-    borderRadius: `${styles.borderRadius}px`, boxShadow: styles.boxShadow,
-    fontFamily: styles.fontFamily, fontSize: `${styles.fontSize}px`, fontWeight: styles.fontWeight,
-  });
+export function applyElementStyles(node, styles, type) {
+  Object.assign(node.style, elementStyles(styles, type));
 }
 
 export function mountCanvas(store) {
@@ -60,6 +52,11 @@ export function mountCanvas(store) {
         node = document.createElement('div');
         node.className = `canvas-element element-${element.type}`;
         node.dataset.elementId = element.id;
+        if (element.type === 'text') {
+          const text = document.createElement('span');
+          text.className = 'element-text-content';
+          node.append(text);
+        }
         if (element.type === 'image') {
           const image = document.createElement('img');
           image.draggable = false;
@@ -70,8 +67,13 @@ export function mountCanvas(store) {
         artboard.append(node);
         nodes.set(element.id, node);
       }
-      if (element.type === 'text' && node.textContent !== element.content) node.textContent = element.content;
-      applyElementStyles(node, displayedStyles(element, state));
+      const pose = displayedStyles(element, state);
+      if (element.type === 'text') {
+        const text = node.querySelector('.element-text-content');
+        if (text.textContent !== element.content) text.textContent = element.content;
+        text.style.clipPath = `inset(0 ${(1 - pose.reveal) * 100}% 0 0)`;
+      }
+      applyElementStyles(node, pose, element.type);
       node.style.zIndex = index;
       node.hidden = !element.visible;
       node.classList.toggle('is-locked', element.locked);
@@ -81,9 +83,11 @@ export function mountCanvas(store) {
     const selected = selectedElement(state);
     box.hidden = !selected || !selected.visible || state.timeline.playing;
     if (selected) {
-      applyElementStyles(box, displayedStyles(selected, state));
+      const pose = displayedStyles(selected, state);
+      applyElementStyles(box, pose, selected.type);
+      box.classList.toggle('turned-in-3d', Math.abs(pose.rotationY % 360) > 0.001);
       // Selection chrome is independent of the element's visual appearance.
-      Object.assign(box.style, { opacity: 1, background: 'none', borderRadius: 0, boxShadow: 'none', border: 'none' });
+      Object.assign(box.style, { opacity: 1, background: 'none', borderRadius: 0, boxShadow: 'none', border: 'none', filter: 'none', clipPath: 'none' });
       box.classList.toggle('locked', selected.locked);
     }
   }

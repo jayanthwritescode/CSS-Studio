@@ -37,3 +37,7 @@
 .spark { position: absolute; color: #aa90cd; font-weight: 300; }
 .spark-one { font-size: 31px; top: -20px; right: 1px; }
 .spark-two { font-size: 50px; left: -20px; bottom: -15px; }
+
+.selection-box.turned-in-3d .selection-handle { display: none; }
+
+.element-text-content { display: block; width: max-content; max-width: 100%; min-height: 1.25em; white-space: pre-wrap; overflow-wrap: anywhere; }

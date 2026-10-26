@@ -1,3 +1,5 @@
+import { mountPresets } from './panels/presets.js';
+import { mountEasingEditor } from './panels/easing-editor.js';
 import { createPlayback } from './animation/engine.js';
 import { mountTimeline } from './animation/timeline.js';
 import { mountKeyframeProperties } from './panels/keyframe-properties.js';
@@ -29,3 +31,6 @@ mountToolbar(store, canvas);
 mountInteractions(store, playback);
 mountElements(store, notify);
 mountTimeline(store, playback, notify);
+
+mountPresets(store, playback, notify);
+mountEasingEditor(store, playback);

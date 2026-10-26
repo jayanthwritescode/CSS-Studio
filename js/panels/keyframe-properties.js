@@ -24,7 +24,7 @@ export function mountKeyframeProperties(store, playback, notify) {
     document.querySelector('#keyframe-fields').disabled = element.locked;
     if (changed || document.activeElement !== time) time.value = frame.time;
     if (changed || document.activeElement !== easing) easing.value = frame.easing;
-    preset.value = EASINGS.includes(frame.easing) ? frame.easing : 'custom';
+    preset.value = parseEasing(frame.easing)?.kind === 'steps' ? 'steps' : EASINGS.includes(frame.easing) ? frame.easing : 'custom';
   }
   function commitTime() {
     const { state, element, frame } = selection();
@@ -57,7 +57,7 @@ export function mountKeyframeProperties(store, playback, notify) {
   preset.addEventListener('change', () => {
     const { element, frame } = selection();
     if (!frame) return;
-    const value = preset.value === 'custom' ? 'cubic-bezier(0.42, 0, 0.58, 1)' : preset.value;
+    const value = preset.value === 'custom' ? 'cubic-bezier(0.42, 0, 0.58, 1)' : preset.value === 'steps' ? 'steps(10, end)' : preset.value;
     store.dispatch({ type: 'keyframe/update', id: element.id, keyframeId: frame.id, easing: value });
     error.hidden = true;
     easing.setAttribute('aria-invalid', 'false');

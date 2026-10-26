@@ -71,7 +71,7 @@ export function mountElements(store, notify) {
     } finally { imagePending = false; }
   });
   document.addEventListener('keydown', event => {
-    if (document.querySelector('#guide').open || event.target.closest('#timeline, input, textarea, select, [contenteditable="true"]')) return;
+    if (event.defaultPrevented || document.querySelector('dialog[open]') || event.target.closest('#timeline, #keyframe-settings, input, textarea, select, [contenteditable="true"]')) return;
     if (event.key === 'Escape') { menu.open = false; return; }
     if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'd') {
       event.preventDefault(); elementAction('duplicate'); return;

@@ -83,3 +83,35 @@ Validation:
 Handoff: stop for the user's GitHub push. Continue with Phase 4 only after the user requests continuation.
 
 Suggested commit message: `feat: add keyframe animation engine and interactive timeline`
+
+
+## Phase 4 — Presets and visual easing
+
+Implemented:
+
+- 24 real, editable presets in Entrance, Exit, Attention, Loading, and Creative categories.
+- Searchable/filterable library with native hover/focus/selected previews, target compatibility, duration/delay/easing controls, and explicit replacement semantics.
+- Preset application is one state action, including all three layers for staggered Bouncing dots. Other tracks remain intact; composition duration extends when necessary.
+- Real effect properties and CSS: 3D turn with perspective, reveal, glow filters, gradient shimmer, and notched spinner stroke.
+- Typewriter uses a monospaced text-sized inner span and `steps(n, end)`, avoiding the larger-box clipping bug. Best on one line, up to 1000 steps.
+- Draggable Bezier graph, coordinate fields, standard/custom curves, overshoot, keyboard handle control, drag cancellation, generated CSS value, and live native preview.
+- Steps render as a staircase and disable cubic handles. Reduced-motion users receive static automatic previews and may explicitly replay easing.
+- Modal-safe editor shortcuts and preview cleanup on close. 3D poses use numerical transform editing while direct resize/rotate/alignment controls are disabled.
+
+Validation:
+
+- 47 automated tests pass, including every preset, minimum timings/scales, delayed holds, target isolation, independent dots, steps, effect CSS, coordinate mapping, lock/type guards, and coordinate bounds.
+- Browser checks: library search, Fade in with 1.5 s delay and 2 s duration evaluates opacity 0.5 at 2.5 s; graph coordinate edits and pointer dragging update the stored curve and actual interpolation; Flip produces rotateY(180deg) at midpoint; shimmer moves a real gradient; glow produces drop-shadow filters; typewriter at 50% clips a 173 px text span instead of the 360 px element box.
+- Browser-verified: three dots produce 15 keyframes and distinct staggered positions; spinner sets a real notched stroke; keyboard graph edits do not move the canvas element; incompatible targets disable Apply; modal shortcuts do not create background layers; empty search and category filtering work; no horizontal page overflow in the narrow preview; browser console is clean.
+- Broad Chromium/responsive/performance coverage remains in the final validation batch.
+
+Next-batch implementation notes:
+
+- Preserve transform order from elements/styles.js, including the identity 3D transform functions for native interpolation.
+- Text reveal belongs on .element-text-content; the main text element retains its designed dimensions. Native export must animate that text-sized span's clip, not the outer box. Use inset(0 0 0 0) as a reveal animation endpoint rather than mixing inset with none.
+- Effects include rotationY/reveal/glow/shimmer and static shimmerEnabled/spinnerEnabled. Apply model defaults to older or external imports before validation.
+- Sparse properties may have independent key times/easing. CSS export must preserve that independence when composing transforms.
+
+Handoff: stop for the user's GitHub push. Continue with Phase 5 only when requested.
+
+Suggested commit message: `feat: add editable animation presets and visual easing editor`

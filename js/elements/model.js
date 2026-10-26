@@ -2,7 +2,7 @@ const TYPES = new Set(['rectangle', 'circle', 'text', 'image']);
 const HEX = /^#[\da-f]{6}$/i;
 const NUMBERS = {
   x: [-100000, 100000], y: [-100000, 100000], width: [1, 10000], height: [1, 10000],
-  rotation: [-36000, 36000], scaleX: [0.05, 10], scaleY: [0.05, 10], opacity: [0, 1],
+  rotation: [-36000, 36000], rotationY: [-36000, 36000], reveal: [0, 1], glow: [0, 80], shimmer: [-200, 200], scaleX: [0.05, 10], scaleY: [0.05, 10], opacity: [0, 1],
   borderWidth: [0, 100], borderRadius: [0, 10000], fontSize: [1, 1000], fontWeight: [100, 900],
 };
 export const FONT_FAMILIES = ['Inter, sans-serif', 'Arial, sans-serif', 'Georgia, serif', 'monospace'];
@@ -30,7 +30,7 @@ export function createElement(type, canvas, count = 0, asset = {}) {
     ...(type === 'image' ? { src: asset.src } : {}),
     styles: {
       x: Math.round((canvas.width - width) / 2), y: Math.round((canvas.height - height) / 2),
-      width, height, rotation: 0, scaleX: 1, scaleY: 1, opacity: 1,
+      width, height, rotation: 0, rotationY: 0, reveal: 1, glow: 0, shimmer: 0, shimmerEnabled: false, spinnerEnabled: false, scaleX: 1, scaleY: 1, opacity: 1,
       backgroundColor: type === 'text' || type === 'image' ? '#faf9ff' : '#9271ed',
       backgroundTransparent: type === 'text' || type === 'image', color: '#302547',
       borderWidth: 0, borderStyle: 'solid', borderColor: '#6c4bb8', borderRadius: type === 'circle' ? 9999 : 16,
@@ -52,7 +52,7 @@ export function validateStylePatch(patch) {
     } else if (['backgroundColor', 'color', 'borderColor'].includes(key)) {
       if (typeof value !== 'string' || !HEX.test(value)) return null;
       result[key] = value.toLowerCase();
-    } else if (key === 'backgroundTransparent' && typeof value === 'boolean') result[key] = value;
+    } else if (['backgroundTransparent', 'shimmerEnabled', 'spinnerEnabled'].includes(key) && typeof value === 'boolean') result[key] = value;
     else if (key === 'borderStyle' && ['solid', 'dashed', 'dotted', 'double', 'none'].includes(value)) result[key] = value;
     else if (key === 'fontFamily' && FONT_FAMILIES.includes(value)) result[key] = value;
     else if (key === 'transformOrigin' && ORIGINS.includes(value)) result[key] = value;

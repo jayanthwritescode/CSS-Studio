@@ -1,7 +1,7 @@
 import { easingFunction } from './easing.js';
 
 export const ANIMATABLE = Object.freeze([
-  'x', 'y', 'width', 'height', 'rotation', 'scaleX', 'scaleY', 'opacity',
+  'x', 'y', 'width', 'height', 'rotation', 'rotationY', 'reveal', 'glow', 'shimmer', 'scaleX', 'scaleY', 'opacity',
   'backgroundColor', 'color', 'borderColor', 'borderWidth', 'borderRadius', 'fontSize',
 ]);
 const COLORS = new Set(['backgroundColor', 'color', 'borderColor']);
@@ -16,9 +16,9 @@ export function interpolate(key, from, to, progress) {
     return `#${channels.join('')}`;
   }
   let value = from + (to - from) * progress;
-  if (key === 'opacity') value = Math.min(1, Math.max(0, value));
+  if (key === 'opacity' || key === 'reveal') value = Math.min(1, Math.max(0, value));
   if (['width', 'height', 'fontSize'].includes(key)) value = Math.max(0.001, value);
-  if (key === 'borderWidth' || key === 'borderRadius') value = Math.max(0, value);
+  if (key === 'borderWidth' || key === 'borderRadius' || key === 'glow') value = Math.max(0, value);
   return value;
 }
 

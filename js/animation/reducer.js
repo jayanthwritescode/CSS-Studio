@@ -1,3 +1,4 @@
+import { buildPreset } from './presets.js';
 import { isValidElement } from '../elements/model.js';
 import { animatedProperties, ANIMATABLE, evaluateElement } from './interpolation.js';
 import { upsertFrame, scaleFrames, validateProperties, validFrames } from './keyframes.js';
@@ -25,6 +26,15 @@ export function editElementStyles(state, element, patch) {
 export function reduceAnimation(state, action) {
   const timeline = state.timeline;
   switch (action.type) {
+    case 'preset/apply': {
+      const element = find(state, action.id);
+      if (!element) return state;
+      const result = buildPreset(element, action.presetId, action.options, state.project.duration);
+      if (!result) return state;
+      const elements = state.project.elements.flatMap(item => item.id === element.id ? result.elements : [item]);
+      return { ...state, project: { ...state.project, duration: result.duration, elements }, selection: element.id,
+        timeline: { ...timeline, time: action.options.delay, playing: false, mode: 'keyframe', keyframeId: result.elements[0].keyframes.find(frame => frame.time === action.options.delay).id } };
+    }
     case 'timeline/seek': {
       if (!Number.isFinite(action.time)) return state;
       const time = clampTime(action.time, state.project.duration);

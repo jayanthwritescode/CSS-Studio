@@ -44,7 +44,7 @@ export function mountToolbar(store, canvas) {
     if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) guide.close();
   } });
   document.addEventListener('keydown', event => {
-    if (guide.open || event.ctrlKey || event.metaKey || event.altKey || event.target.closest('input, select, textarea, [contenteditable="true"]')) return;
+    if (event.defaultPrevented || document.querySelector('dialog[open]') || event.ctrlKey || event.metaKey || event.altKey || event.target.closest('input, select, textarea, [contenteditable="true"]')) return;
     const key = event.key.toLowerCase();
     if (key === 'f') { event.preventDefault(); canvas.fit(); }
     if (key === 'g') { event.preventDefault(); toggleGrid(); }

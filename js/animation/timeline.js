@@ -235,7 +235,7 @@ export function mountTimeline(store, playback, notify) {
     else playback.seek(next);
   });
   document.addEventListener('keydown', event => {
-    if (event.defaultPrevented || document.querySelector('#guide').open || event.ctrlKey || event.metaKey || event.altKey || event.target.closest('input, textarea, select, [contenteditable="true"]') || document.querySelector('.is-dragging')) return;
+    if (event.defaultPrevented || document.querySelector('dialog[open]') || event.ctrlKey || event.metaKey || event.altKey || event.target.closest('input, textarea, select, [contenteditable="true"]') || document.querySelector('.is-dragging')) return;
     if (event.code === 'Space') { event.preventDefault(); if (store.getState().project.elements.length) playback.toggle(); }
     if (event.key.toLowerCase() === 'k') { event.preventDefault(); addKeyframe(); }
   });

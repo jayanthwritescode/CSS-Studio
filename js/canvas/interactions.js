@@ -79,7 +79,7 @@ export function mountInteractions(store, playback) {
   viewport.addEventListener('pointercancel', event => { if (gesture?.pointer === event.pointerId) finish(true); });
   viewport.addEventListener('lostpointercapture', () => finish(true));
   document.addEventListener('keydown', event => {
-    if (document.querySelector('#guide').open || event.target.closest('#timeline, input, textarea, select, [contenteditable="true"]')) return;
+    if (event.defaultPrevented || document.querySelector('dialog[open]') || event.target.closest('#timeline, input, textarea, select, [contenteditable="true"]')) return;
     if (event.key === 'Escape') {
       if (gesture) finish(true);
       else { store.dispatch({ type: 'selection/set', id: null }); setPan(false); }
