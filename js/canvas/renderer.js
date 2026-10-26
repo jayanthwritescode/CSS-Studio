@@ -1,3 +1,4 @@
+import { displayedStyles } from '../animation/interpolation.js';
 import { selectedElement } from '../state/store.js';
 
 export function applyElementStyles(node, styles) {
@@ -70,7 +71,7 @@ export function mountCanvas(store) {
         nodes.set(element.id, node);
       }
       if (element.type === 'text' && node.textContent !== element.content) node.textContent = element.content;
-      applyElementStyles(node, element.styles);
+      applyElementStyles(node, displayedStyles(element, state));
       node.style.zIndex = index;
       node.hidden = !element.visible;
       node.classList.toggle('is-locked', element.locked);
@@ -78,9 +79,9 @@ export function mountCanvas(store) {
       node.setAttribute('aria-label', `${element.name}${element.locked ? ', locked' : ''}`);
     });
     const selected = selectedElement(state);
-    box.hidden = !selected || !selected.visible;
+    box.hidden = !selected || !selected.visible || state.timeline.playing;
     if (selected) {
-      applyElementStyles(box, selected.styles);
+      applyElementStyles(box, displayedStyles(selected, state));
       // Selection chrome is independent of the element's visual appearance.
       Object.assign(box.style, { opacity: 1, background: 'none', borderRadius: 0, boxShadow: 'none', border: 'none' });
       box.classList.toggle('locked', selected.locked);

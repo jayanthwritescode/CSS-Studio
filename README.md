@@ -2,7 +2,7 @@
 
 A browser-based visual CSS animation studio built with HTML, CSS, and vanilla JavaScript ES modules. No build step, frontend framework, or production dependencies.
 
-The canvas editor is implemented. Keyframes, playback, persistence, and export are the next internal development batches. The product interface contains only working tools and product guidance; build checkpoints live in [PHASES.md](PHASES.md).
+The canvas editor, keyframe animation engine, and interactive timeline are implemented. Presets, a graphical easing editor, persistence, and export are the next internal development batches. The product interface contains only working tools and product guidance; build checkpoints live in [PHASES.md](PHASES.md).
 
 ## Run locally
 
@@ -32,6 +32,25 @@ Image import supports PNG, JPEG, WebP, and GIF files up to 5 MB and 40 megapixel
 
 **Changes currently live in memory and reset on reload.** Persistence, autosave, JSON import/export, CSS/HTML export, and undo/redo are not yet implemented. Do not use this development build for work that needs saving. The empty-canvas artwork is editor guidance, not a project element.
 
+## Animate a composition
+
+1. Add an element and design its starting pose with **Animate off** (base mode).
+2. Click **+ Keyframe** or press `K` to capture a keyframe at time zero.
+3. Seek to another time using the ruler, playhead, or **Time** field in milliseconds.
+4. Edit position, rotation, scale, opacity, size, or color in Properties, or drag/resize/rotate on the canvas. **Animate mode automatically records these edits at the playhead.**
+5. Select a keyframe diamond to edit its pose, exact timestamp, and easing. Drag diamonds to move them; Shift snaps to 100 ms. Occupied timestamps are protected from move collisions. Capturing an existing timestamp updates that keyframe.
+6. Press **Play** or `Space`. Pause resumes from the current position; Stop returns to time zero; Restart plays again from the start in the current direction. Reverse, 0.5×/1×/2× speed, and Loop affect the preview.
+
+Each element has an independent track. Scrubbing always evaluates the actual animation. The playhead supports Left/Right by 10 ms, Shift + Left/Right by 100 ms, and Home/End. Focus a keyframe marker to move it with those keys. Delete/Backspace inside the timeline deletes the selected keyframe; outside the timeline it deletes the selected element.
+
+The **Duration** field uses seconds (0.001–120). Enter or blur commits the value, rescales all keyframe timestamps and the playhead proportionally, and preserves the current pose. Timeline zoom changes the horizontal editing scale and provides horizontal scrolling. Previous/next keyframe buttons navigate the selected track, or all tracks when no element is selected.
+
+**Base mode** edits the element's underlying styles and shows those styles at time zero. Explicit keyframes remain unchanged. Seeking or playing enters Animate mode; turn Animate off to return to base editing. Transform, dimensions, opacity, fill/text/border colors, border width/radius, and font size can be keyed. Text content, font family/weight, transparent fill, border style, shadow, and transform origin apply across the whole element.
+
+Keyframes contain independent property values. Missing values interpolate between that property's surrounding keys; a missing starting value uses the base style at zero, and the final keyed value holds to the project end. Easing belongs to the starting key of each property segment. Standard CSS easings and validated `cubic-bezier(x1, y1, x2, y2)` values are supported. The graph editor and preset library are still pending.
+
+Playback uses one `requestAnimationFrame` scheduler and a shared evaluator for preview and scrubbing. Compiled property tracks and current poses are cached per immutable element. Hidden elements retain their keyframes; locked elements can play but cannot have keyframes edited. Playback pauses when the tab becomes hidden or a property field receives focus.
+
 ## Keyboard shortcuts
 
 Shortcuts do not intercept typing in fields or normal modified browser shortcuts, except the editor's documented duplicate command.
@@ -40,10 +59,12 @@ Shortcuts do not intercept typing in fields or normal modified browser shortcuts
 | --- | --- |
 | `R` / `C` / `T` / `I` | Add rectangle / circle / text / image |
 | `V` / `H` | Select / pan tool |
+| Space | Play / pause outside form fields |
+| `K` | Capture selected element at the playhead |
 | Arrow keys | Move selection by 1 px |
 | Shift + Arrow keys | Move selection by 10 px |
 | Ctrl/Cmd + D | Duplicate selection |
-| Delete / Backspace | Delete unlocked selection |
+| Delete / Backspace | Delete selected keyframe inside the timeline; otherwise delete unlocked element |
 | `F` | Fit canvas and reset pan |
 | `G` | Toggle grid |
 | `+` / `=` / `-` | Zoom in / out |
@@ -61,6 +82,7 @@ css/layout.css                     Responsive panel layout
 css/components.css                 Shared controls and dialog
 css/canvas.css                     Artboard, elements, selection handles
 css/editor.css                     Editor tools, layers, properties
+css/timeline.css                   Timeline, transport, tracks, markers
 js/main.js                         App composition and notifications
 js/state/store.js                  Validated immutable project/view/selection state
 js/elements/model.js               Element factory and style validation
@@ -72,9 +94,16 @@ js/panels/properties.js            Canvas settings bindings
 js/panels/element-properties.js     Element appearance and alignment bindings
 js/panels/layers.js                Keyed layer list and selection actions
 js/panels/toolbar.js               Project name, view controls, shortcuts dialog
+js/panels/keyframe-properties.js    Keyframe timestamp and easing inspector
+js/animation/reducer.js            Timeline/keyframe actions and auto-key routing
+js/animation/interpolation.js      Cached numerical/color property evaluation
+js/animation/easing.js             CSS easing parsing and cubic-bezier solver
+js/animation/keyframes.js          Frame validation, upsert, duration scaling
+js/animation/engine.js             Single playback scheduler and transport
+js/animation/timeline.js           Tracks, seeking, marker interaction, timeline UI
 ```
 
-Project data remains serializable and separate from transient selection, zoom, and pan. Rendering and pointer geometry are separate modules. Future animation/export/history modules will be added in their designated batches.
+Project data remains serializable and separate from transient selection, playback, zoom, and pan. Rendering, pointer geometry, animation evaluation, and playback scheduling are separate modules. Export and history will be added in their designated batches.
 
 ## Verification
 
@@ -84,8 +113,8 @@ The app has no Node runtime dependency. With Node.js 22.7+, run the optional dev
 node --test tests/*.test.mjs
 ```
 
-Tests cover state validation, immutable updates, project serialization, zoom/pan bounds, element creation, lock protection, duplication/deletion, layer order, plain-text content, style injection rejection, rotated resizing across all handles and origins, size clamping, rotation snapping, and transformed bounds.
+36 tests cover sparse property interpolation, endpoints, missing/duplicate timestamps, color transitions, custom easing, single-scheduler pause/resume, reverse/loop/stop/restart, auto-key isolation, frame operations, duration rescaling/collisions, animated duplication, gesture rollback, and state validation, immutable updates, project serialization, zoom/pan bounds, element creation, lock protection, duplication/deletion, layer order, plain-text content, style injection rejection, rotated resizing across all handles and origins, size clamping, rotation snapping, and transformed bounds.
 
-Browser checks cover actual element creation, dragging/resizing/rotation at non-100% zoom, text editing, image import, appearance controls, transformed alignment, layer visibility/locking/renaming/reordering, duplication/deletion, pan/fit, and keyboard shortcuts. Full Chromium compatibility and cross-feature validation remain on the internal roadmap.
+Browser checks verify exact midpoint animation values, easing effects, independent element tracks, duration rescaling, keyframe-time editing, invalid easing feedback, marker and playhead dragging, keyframe deletion, playback/reverse/speed/stop, timeline zoom, and actual element creation, dragging/resizing/rotation at non-100% zoom, text editing, image import, appearance controls, transformed alignment, layer visibility/locking/renaming/reordering, duplication/deletion, pan/fit, and keyboard shortcuts. Full Chromium compatibility and cross-feature validation remain on the internal roadmap.
 
 See the [original project brief](docs/PROJECT-BRIEF.md) for full intended functionality and [batch checkpoints](PHASES.md) for development progress.

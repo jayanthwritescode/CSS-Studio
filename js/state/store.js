@@ -1,3 +1,5 @@
+import { editElementStyles, initialTimeline, reduceAnimation } from '../animation/reducer.js';
+import { validFrames } from '../animation/keyframes.js';
 import { isValidElement, newId, validateStylePatch } from '../elements/model.js';
 
 /** Project data is serializable; workspace view state is kept separate. */
@@ -15,10 +17,14 @@ export function createInitialState() {
     },
     view: { zoom: 0.5, grid: true, fit: true, panX: 0, panY: 0 },
     selection: null,
+    timeline: initialTimeline(),
   };
 }
 
 export function reduce(state, action) {
+  if (action.type === 'element/restore-gesture' && !validateStylePatch(action.styles)) return state;
+  const animation = reduceAnimation(state, action);
+  if (animation !== undefined) return animation;
   switch (action.type) {
     case 'project/rename': {
       if (typeof action.name !== 'string') return state;
@@ -59,19 +65,20 @@ export function reduce(state, action) {
     }
     case 'selection/set': {
       const selection = action.id === null || state.project.elements.some(element => element.id === action.id) ? action.id : state.selection;
-      return selection === state.selection ? state : { ...state, selection };
+      return selection === state.selection ? state : { ...state, selection, timeline: { ...state.timeline, keyframeId: null } };
     }
     case 'element/add': {
-      if (!isValidElement(action.element) || state.project.elements.some(element => element.id === action.element.id)) return state;
+      if (!isValidElement(action.element) || !validFrames(action.element.keyframes, state.project.duration) || state.project.elements.some(element => element.id === action.element.id)) return state;
       const element = structuredClone(action.element);
-      return { ...state, project: { ...state.project, elements: [...state.project.elements, element] }, selection: element.id };
+      element.keyframes.sort((a, b) => a.time - b.time);
+      return { ...state, project: { ...state.project, elements: [...state.project.elements, element] }, selection: element.id, timeline: { ...state.timeline, keyframeId: null } };
     }
     case 'element/update': {
       const element = state.project.elements.find(item => item.id === action.id);
       if (!element || element.locked) return state;
       const patch = validateStylePatch(action.styles);
-      if (!patch || Object.keys(patch).every(key => element.styles[key] === patch[key])) return state;
-      return updateElement(state, element.id, { ...element, styles: { ...element.styles, ...patch } });
+      if (!patch) return state;
+      return editElementStyles(state, element, patch);
     }
     case 'element/content': {
       const element = state.project.elements.find(item => item.id === action.id);
@@ -94,7 +101,7 @@ export function reduce(state, action) {
     case 'element/delete': {
       const element = state.project.elements.find(item => item.id === action.id);
       if (!element || element.locked) return state;
-      return { ...state, project: { ...state.project, elements: state.project.elements.filter(item => item.id !== element.id) }, selection: state.selection === element.id ? null : state.selection };
+      return { ...state, project: { ...state.project, elements: state.project.elements.filter(item => item.id !== element.id) }, selection: state.selection === element.id ? null : state.selection, timeline: { ...state.timeline, keyframeId: state.selection === element.id ? null : state.timeline.keyframeId, playing: state.project.elements.length === 1 ? false : state.timeline.playing } };
     }
     case 'element/duplicate': {
       const index = state.project.elements.findIndex(item => item.id === action.id);
@@ -103,11 +110,12 @@ export function reduce(state, action) {
       copy.id = newId();
       copy.name = `${copy.name.slice(0, 73)} copy`;
       copy.locked = false;
+      copy.keyframes = copy.keyframes.map(frame => ({ ...frame, id: newId(), properties: { ...frame.properties, ...('x' in frame.properties ? { x: Math.min(100000, frame.properties.x + 24) } : {}), ...('y' in frame.properties ? { y: Math.min(100000, frame.properties.y + 24) } : {}) } }));
       copy.styles.x = Math.min(100000, copy.styles.x + 24);
       copy.styles.y = Math.min(100000, copy.styles.y + 24);
       const elements = [...state.project.elements];
       elements.splice(index + 1, 0, copy);
-      return { ...state, project: { ...state.project, elements }, selection: copy.id };
+      return { ...state, project: { ...state.project, elements }, selection: copy.id, timeline: { ...state.timeline, keyframeId: null } };
     }
     case 'element/reorder': {
       const index = state.project.elements.findIndex(item => item.id === action.id);

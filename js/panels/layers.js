@@ -1,3 +1,4 @@
+import { displayedStyles } from '../animation/interpolation.js';
 import { selectedElement } from '../state/store.js';
 
 const ICONS = { rectangle: '▢', circle: '○', text: 'T', image: '▧' };
@@ -73,13 +74,19 @@ export function mountLayers(store) {
       button.disabled = !selected || (selected.locked && ['delete', 'forward', 'backward'].includes(action))
         || (action === 'forward' && position === elements.length - 1) || (action === 'backward' && position === 0);
     });
+    updateSummary(state);
+  }
+  function updateSummary(state) {
+    const selected = selectedElement(state);
+    const styles = selected ? displayedStyles(selected, state) : null;
     document.querySelector('#selection-title').textContent = selected ? selected.name : 'Your canvas, your composition.';
     document.querySelector('#selection-description').textContent = selected
-      ? `${selected.locked ? 'Locked · ' : ''}${selected.visible ? '' : 'Hidden · '}${Math.round(selected.styles.width)} × ${Math.round(selected.styles.height)} px · ${Math.round(selected.styles.rotation)}° rotation`
+      ? `${selected.locked ? 'Locked · ' : ''}${selected.visible ? '' : 'Hidden · '}${Math.round(styles.width)} × ${Math.round(styles.height)} px · ${Math.round(styles.rotation)}° rotation`
       : 'Add an element to start designing.';
   }
   store.subscribe((state, action) => {
-    render(state);
+    if (action.type === 'timeline/tick' || action.type === 'timeline/seek') updateSummary(state);
+    else render(state);
     if (action.type === 'element/add') setOpen(false);
   });
   render(store.getState());

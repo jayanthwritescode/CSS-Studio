@@ -56,3 +56,30 @@ Validation:
 Handoff: stop here for the user's GitHub push. Do not start Phase 3 until the user confirms the push and asks to continue.
 
 Suggested commit message: `feat: add interactive canvas editor and layer controls`
+
+
+## Phase 3 — Animation engine and timeline
+
+Implemented:
+
+- Independent sparse keyframe property tracks, numerical and sRGB color interpolation, transform composition, and implicit boundaries.
+- Standard CSS easing plus validated custom cubic-bezier evaluation; tracks and current poses cached by immutable element.
+- One requestAnimationFrame scheduler with play/pause/resume, stop, restart, reverse, speed, looping, exact seeking, and tab-visibility pause.
+- Separate base and Animate modes; animated property edits create/update keys without mutating base styles.
+- Per-element timeline tracks, time ruler, draggable/keyboard playhead, precise millisecond input, selected-track key navigation, and timeline zoom/scroll.
+- Capture, select, move, edit, and delete keyframes; numeric time editing, segment easing, invalid-value feedback, collision protection, and Shift snapping.
+- Duration changes rescale every track and playhead; duplicate timestamps caused by compression merge deterministically.
+- Canvas drag/resize/rotation/nudging and property controls use the evaluated pose. Gesture rollback restores original frame data.
+- Animated duplication offsets both base and keyed positions and generates independent frame IDs.
+- Product-facing help stays free of development-phase references.
+
+Validation:
+
+- 36 automated tests pass, including fake-clock scheduler checks and engine/state/model/geometry regressions.
+- Browser-verified: exact numerical/color midpoint, easing interpolation, two independent tracks, play/pause, reverse at 2×, stop, 6-second duration rescaling, numeric keyframe time edit, invalid/valid cubic-bezier input, marker drag, playhead drag, keyframe keyboard deletion, and timeline zoom.
+- Example midpoint: X 100→900 evaluates to 500 at 50%; rotation 0→180 evaluates to 90; opacity 1→0.4 evaluates to 0.7; #9271ed→#ffbf69 evaluates to #c998ab.
+- Source imports/syntax/HTML IDs and whitespace checked. Full Chromium compatibility and broad responsive/performance checks remain in the final validation batch.
+
+Handoff: stop for the user's GitHub push. Continue with Phase 4 only after the user requests continuation.
+
+Suggested commit message: `feat: add keyframe animation engine and interactive timeline`

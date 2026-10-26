@@ -1,7 +1,8 @@
+import { displayedStyles } from '../animation/interpolation.js';
 import { selectedElement } from '../state/store.js';
 import { resizeFromDelta, rotationFromPointer } from './geometry.js';
 
-export function mountInteractions(store) {
+export function mountInteractions(store, playback) {
   const viewport = document.querySelector('#viewport');
   const artboard = document.querySelector('#artboard');
   const panButton = document.querySelector('#pan-tool');
@@ -31,13 +32,14 @@ export function mountInteractions(store) {
         viewport.focus({ preventScroll: true });
         return;
       }
+      playback.pause();
       if (node) store.dispatch({ type: 'selection/set', id: node.dataset.elementId });
       const selected = selectedElement(store.getState());
       if (!selected || selected.locked || !selected.visible) return;
       const zoom = store.getState().view.zoom;
       gesture = {
         type: handle?.dataset.handle === 'rotate' ? 'rotate' : handle ? 'resize' : 'move',
-        handle: handle?.dataset.handle, id: selected.id, styles: { ...selected.styles }, zoom,
+        handle: handle?.dataset.handle, id: selected.id, styles: { ...displayedStyles(selected, store.getState()) }, baseStyles: selected.styles, keyframes: selected.keyframes, keyframeId: store.getState().timeline.keyframeId, zoom,
         pointer: event.pointerId, start: canvasPoint(event, zoom),
       };
     }
@@ -69,7 +71,7 @@ export function mountInteractions(store) {
     const previous = gesture;
     gesture = null;
     if (cancel && previous.type === 'pan') store.dispatch({ type: 'view/pan', x: previous.panX, y: previous.panY });
-    if (cancel && previous.id) store.dispatch({ type: 'element/update', id: previous.id, styles: previous.styles });
+    if (cancel && previous.id) store.dispatch({ type: 'element/restore-gesture', id: previous.id, styles: previous.baseStyles, keyframes: previous.keyframes, keyframeId: previous.keyframeId });
     if (viewport.hasPointerCapture(previous.pointer)) viewport.releasePointerCapture(previous.pointer);
     viewport.classList.remove('is-dragging');
   }
@@ -77,7 +79,7 @@ export function mountInteractions(store) {
   viewport.addEventListener('pointercancel', event => { if (gesture?.pointer === event.pointerId) finish(true); });
   viewport.addEventListener('lostpointercapture', () => finish(true));
   document.addEventListener('keydown', event => {
-    if (document.querySelector('#guide').open || event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+    if (document.querySelector('#guide').open || event.target.closest('#timeline, input, textarea, select, [contenteditable="true"]')) return;
     if (event.key === 'Escape') {
       if (gesture) finish(true);
       else { store.dispatch({ type: 'selection/set', id: null }); setPan(false); }
@@ -91,8 +93,10 @@ export function mountInteractions(store) {
     const selected = selectedElement(store.getState());
     if (!gesture && delta && selected && selected.visible && !selected.locked) {
       event.preventDefault();
+      playback.pause();
       const step = event.shiftKey ? 10 : 1;
-      store.dispatch({ type: 'element/update', id: selected.id, styles: { x: selected.styles.x + delta[0] * step, y: selected.styles.y + delta[1] * step } });
+      const styles = displayedStyles(selected, store.getState());
+      store.dispatch({ type: 'element/update', id: selected.id, styles: { x: styles.x + delta[0] * step, y: styles.y + delta[1] * step } });
     }
   });
   window.addEventListener('blur', () => finish(true));
